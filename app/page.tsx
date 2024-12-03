@@ -1,4 +1,4 @@
-import PickPage from "@/app/pick/page";
+import PickPage from "@/app/pages/pick/page";
 
 export default function Home() {
   return (
