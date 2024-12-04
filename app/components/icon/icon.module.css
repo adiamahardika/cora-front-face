@@ -5,6 +5,7 @@
     align-items: center;
     background-color: var(--black);
     color: var(--white);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .hidden {

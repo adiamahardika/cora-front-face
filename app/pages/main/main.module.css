@@ -47,3 +47,6 @@
     height: auto;
 }
 
+.hidden {
+    opacity: 0;
+}
