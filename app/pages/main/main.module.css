@@ -35,15 +35,6 @@
     opacity: 0;
 }
 
-.icon {
-    padding: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--black);
-    color: var(--white);
-}
-
 .imgProfile {
     width: 500px;
     max-width: 100%;
@@ -56,14 +47,3 @@
     height: auto;
 }
 
-.hidden {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.show {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
