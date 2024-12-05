@@ -2,6 +2,15 @@ import {IconCaretUpFilled, IconCaretDownFilled, IconSettings2} from "@tabler/ico
 import {useEffect, useRef, useState} from "react";
 
 import classes from "./icon.module.css";
+import {
+    Drawer, DrawerClose,
+    DrawerContent,
+    DrawerDescription, DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger
+} from "@/components/ui/drawer";
+import {Button} from "@/components/ui/button";
 
 export default function IconSettings() {
     const [showSettings, setShowSettings] = useState(false);
@@ -36,6 +45,8 @@ export default function IconSettings() {
 
     return (
         <>
+
+
             <div
                 className={`${classes.icon} ${isHidden ? classes.hidden : ""} ${
                     showSettings ? classes.show : ""
@@ -53,7 +64,20 @@ export default function IconSettings() {
                     showSettings ? classes.show : classes.hidden
                 }`}
             >
-                <IconSettings2 size={32}/>
+                <Drawer>
+                    <DrawerTrigger>
+                        <IconSettings2 size={32}/>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                        <DrawerHeader>
+                            <DrawerTitle>Settings Drawer</DrawerTitle>
+                            <DrawerDescription>Unknown</DrawerDescription>
+                        </DrawerHeader>
+                        <DrawerFooter>
+                            <Button>Rafa Keren</Button>
+                        </DrawerFooter>
+                    </DrawerContent>
+                </Drawer>
             </div>
         </>
     );

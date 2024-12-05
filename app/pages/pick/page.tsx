@@ -1,9 +1,9 @@
 'use client'
 import classes from './pick.module.css'
-import AvatarContext from "@/app/components/avatar/avatar-context";
+import AvatarContext from "@/components/avatar/avatar-context";
 import {useContext, useState, useEffect} from "react";
 import {useRouter} from "next/navigation";
-import Loading from "@/app/components/loading/loading";
+import Loading from "@/components/loading/loading";
 
 export default function PickPage() {
     const {setAvatar} = useContext(AvatarContext);

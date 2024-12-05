@@ -1,8 +1,8 @@
 'use client'
 import classes from './main.module.css'
-import AvatarContext from "@/app/components/avatar/avatar-context";
+import AvatarContext from "@/components/avatar/avatar-context";
 import {useContext} from "react";
-import IconSettings from "@/app/components/icon/icon";
+import IconSettings from "@/components/icon/icon";
 
 export default function PickPage() {
     const {avatar} = useContext(AvatarContext);
