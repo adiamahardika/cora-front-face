@@ -2,7 +2,8 @@
 import "./globals.css";
 import type {Metadata} from "next";
 import {Inter} from 'next/font/google'
-import {AvatarProvider} from "@/app/components/avatar/avatar-context";
+import {AvatarProvider} from "@/components/avatar/avatar-context";
+import {ThemeProvider} from "next-themes";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -32,9 +33,14 @@ export default function RootLayout({
         <body
             className={inter.className}
         >
-        <AvatarProvider>
-            {children}
-        </AvatarProvider>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+        >
+            <AvatarProvider>
+                {children}
+            </AvatarProvider>
+        </ThemeProvider>
         </body>
         </html>
     );
