@@ -21,15 +21,3 @@
     overflow-wrap: break-word;
     flex-grow: 1; /* Main section grows to take remaining space */
 }
-
-.side {
-    flex: 0 0 auto; /* Prevent shrinking or growing */
-    display: flex;
-    align-items: stretch; /* Ensures the img inside stretches to fill */
-}
-
-.side img {
-    height: 100%; /* Image fills the height of the parent container */
-    width: 100%; /* Image stretches to fill the width of the parent container */
-    object-fit: fill; /* Allows the image to stretch both vertically and horizontally */
-}

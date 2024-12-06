@@ -1,0 +1,23 @@
+.wrapper {
+    padding: 16px; /* Add some padding around the wrapper for spacing */
+    display: flex;
+    flex-direction: column;
+    gap: .7rem; /* Consistent gap between items */
+}
+
+.item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between; /* Ensures proper alignment and spacing */
+    gap: 1rem; /* Add a smaller gap between elements inside the item */
+}
+
+.img {
+    width: 48px;
+    object-fit: cover; /* Ensure the image maintains aspect ratio */
+}
+
+.slider {
+    width: 11rem;
+}

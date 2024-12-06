@@ -1,25 +1,16 @@
-import {IconCaretUpFilled, IconCaretDownFilled, IconSettings2} from "@tabler/icons-react";
+import {IconHexagon} from "@tabler/icons-react";
 import {useEffect, useRef, useState} from "react";
 
 import classes from "./icon.module.css";
 import {
-    Drawer, DrawerClose,
-    DrawerContent,
-    DrawerDescription, DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
+    Drawer,
     DrawerTrigger
 } from "@/components/ui/drawer";
-import {Button} from "@/components/ui/button";
+import DrawerComponent from "@/components/drawer/drawer";
 
 export default function IconSettings() {
-    const [showSettings, setShowSettings] = useState(false);
     const [isHidden, setIsHidden] = useState(false);
     const timerRef = useRef<number | null>(null);
-
-    const toggleSettings = () => {
-        setShowSettings(!showSettings);
-    };
 
     useEffect(() => {
         const handleMouseMove = () => {
@@ -45,40 +36,16 @@ export default function IconSettings() {
 
     return (
         <>
-
-
-            <div
-                className={`${classes.icon} ${isHidden ? classes.hidden : ""} ${
-                    showSettings ? classes.show : ""
-                }`}
-                onClick={toggleSettings}
-            >
-                {showSettings ? (
-                    <IconCaretDownFilled size={32}/>
-                ) : (
-                    <IconCaretUpFilled size={32}/>
-                )}
-            </div>
-            <div
-                className={`${classes.icon} ${
-                    showSettings ? classes.show : classes.hidden
-                }`}
-            >
-                <Drawer>
-                    <DrawerTrigger>
-                        <IconSettings2 size={32}/>
-                    </DrawerTrigger>
-                    <DrawerContent>
-                        <DrawerHeader>
-                            <DrawerTitle>Settings Drawer</DrawerTitle>
-                            <DrawerDescription>Unknown</DrawerDescription>
-                        </DrawerHeader>
-                        <DrawerFooter>
-                            <Button>Rafa Keren</Button>
-                        </DrawerFooter>
-                    </DrawerContent>
-                </Drawer>
-            </div>
+            <Drawer>
+                <DrawerTrigger>
+                    <div
+                        className={`${classes.icon} ${isHidden ? classes.hidden : ""}`}
+                    >
+                        <IconHexagon size={32} stroke={3}/>
+                    </div>
+                </DrawerTrigger>
+                <DrawerComponent/>
+            </Drawer>
         </>
     );
 }
