@@ -3,6 +3,7 @@ import classes from './main.module.css'
 import AvatarContext from "@/components/avatar/avatar-context";
 import {useContext} from "react";
 import IconSettings from "@/components/icon/icon";
+import BubbleComponent from "@/components/bubble-container/bubble";
 
 export default function PickPage() {
     const {avatar} = useContext(AvatarContext);
@@ -14,10 +15,7 @@ export default function PickPage() {
                     <IconSettings/>
                 </div>
                 <div className={classes.wrapperImg}>
-                    <div>
-                        alkdjalskdjalsdjalkjdaldsjlaskdjlaksdalskdj
-                        <img className={classes.imgContainer} src="/container.svg" alt="Container Chat"/>
-                    </div>
+                    <BubbleComponent content={'Pluh'}/>
                     <img className={classes.imgProfile} src={`/${avatar}.svg`} alt="Selected Avatar"/>
                 </div>
                 <div className={classes.hidden}>
