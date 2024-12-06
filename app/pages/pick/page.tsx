@@ -31,13 +31,13 @@ export default function PickPage() {
             {(isLoading || isAvatarLoading) && <Loading/>}
             <div className={classes.item} onClick={() => handleAvatarSelect('male')}>
                 <img src="/male-profile.svg" alt="Male Profile"/>
-                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-3xl">
+                <h1 className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-3xl ${classes.h1}`}>
                     Male
                 </h1>
             </div>
             <div className={classes.item} onClick={() => handleAvatarSelect('female')}>
                 <img src="/female-profile.svg" alt="Female Profile"/>
-                <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-3xl">
+                <h1 className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-3xl ${classes.h1}`}>
                     Female
                 </h1>
             </div>
