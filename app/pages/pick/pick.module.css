@@ -5,8 +5,6 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background: url('/background.png') no-repeat center center fixed;
-    background-size: cover;
     gap: 6rem;
 }
 
@@ -25,7 +23,6 @@
 }
 
 .item img:hover{
-    /*transition: transform 0.2s ease;*/
     transform: scale(1.1);
 }
 
