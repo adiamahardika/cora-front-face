@@ -21,3 +21,7 @@
     overflow-wrap: break-word;
     flex-grow: 1; /* Main section grows to take remaining space */
 }
+
+.hidden {
+    opacity: 0;
+}

@@ -4,7 +4,7 @@ import classes from './bubble.module.css';
 // @ts-expect-error
 export default function BubbleComponent({ content }) {
     return (
-        <div className={classes.wrapper}>
+        <div className={`${classes.wrapper} ${classes.hidden}`}>
             <div className={classes.main}>
                 <p>
                     {content}
