@@ -4,7 +4,7 @@ import AvatarContext from "@/components/avatar/avatar-context";
 import {useContext} from "react";
 import IconSettings from "@/components/icon/icon";
 import BubbleComponent from "@/components/bubble-container/bubble";
-import WebSocketGreeting from '@/components/welcome/welcome';
+// import WebSocketGreeting from '@/components/welcome/welcome';
 
 export default function PickPage() {
     const {avatar} = useContext(AvatarContext);
@@ -17,7 +17,18 @@ export default function PickPage() {
                 </div>
                 <div className={classes.wrapperImg}>
                     <BubbleComponent content={'Pluh'}/>
-                    <img className={classes.imgProfile} src={`/${avatar}.svg`} alt="Selected Avatar"/>
+                    <div className={classes.imgContainer}>
+                        <img
+                            src="/mouth.gif"
+                            alt="Mouth Animation"
+                            className={classes.gif}
+                        />
+                        <img
+                            className={classes.imgProfile}
+                            src={`/${avatar}.svg`}
+                            alt="Selected Avatar"
+                        />
+                    </div>
                 </div>
                 <div className={classes.hidden}>
                     <IconSettings/>

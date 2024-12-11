@@ -35,15 +35,26 @@
 }
 
 .imgProfile {
-    width: 500px;
+    width: 100%;
+    height: auto;
+    position: relative; /* Keep avatar in normal flow */
+    z-index: 1; /* Ensure avatar is below the GIF */
+}
+
+.imgContainer {
+    position: relative; /* Create a positioning context */
+    width: 500px; /* Adjust as needed */
     max-width: 100%;
     height: auto;
 }
 
-.imgContainer {
-    width: 500px;
-    max-width: 100%;
+.gif {
+    position: absolute;
+    top: 160px;
+    left: 220px;
+    width: 200px;
     height: auto;
+    z-index: 2;
 }
 
 .hidden {
