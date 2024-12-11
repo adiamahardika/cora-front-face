@@ -1,115 +1,87 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { io } from "socket.io-client";
 
-
-const WebSocketGreeting = ({ aigender }: { aigender: string }) => {
-  const [message, setMessage] = useState("Waiting for greeting...");
-  const [usergender, setUsergender] = useState("");
-  const [greeting, setGreeting] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false); // Track if greeting is playing
-
+const WebSocketGreeting = ({
+  aigender,
+  setGreetingCallback,
+}: {
+  aigender: string;
+  setGreetingCallback: (greeting: string) => void;
+}) => {
   useEffect(() => {
     const socket = io("http://localhost:5000", {
       transports: ["websocket"],
     });
 
-       const playGreeting = async (data: { gender: string }) => {
-         if (isProcessing) {
-           console.log("Greeting already in progress, ignoring new data...");
-           return;
-         }
+    const playAudioBlob = async (audioBlob: Blob) => {
+      const audioContext = new AudioContext();
 
-         setIsProcessing(true); // Set processing to true
-         setMessage("Ping received! Generating greeting...");
+      try {
+        const arrayBuffer = await audioBlob.arrayBuffer();
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-         const detectedGender = data.gender;
-         setUsergender(detectedGender);
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(audioContext.destination);
+        source.start();
+      } catch (error) {
+        console.error("Error decoding or playing audio:", error);
+      }
+    };
 
-         try {
-           const response = await fetch(
-             "http://localhost:5000/ai_speech/generate-greeting",
-             {
-               method: "POST",
-               headers: { "Content-Type": "application/json" },
-               body: JSON.stringify({ text: detectedGender }), // Send the detected gender here
-             }
-           );
+    const playGreeting = async (data: { gender: string; time: any }) => {
+      console.log("Processing detection data:", data);
+      try {
+        const response = await fetch(
+          "http://localhost:5000/ai_speech/generate-greeting",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: data.gender, time: data.time }),
+          }
+        );
 
-           if (!response.ok) {
-             throw new Error(`Error from server: ${response.statusText}`);
-           }
+        if (!response.ok) {
+          throw new Error(`Error from server: ${response.statusText}`);
+        }
 
-           const result = await response.json();
-           const greetingText = result.text;
-           setGreeting(greetingText);
+        const result = await response.json();
+        const greetingText = result.text;
 
-           const utterance = new SpeechSynthesisUtterance(greetingText);
+        // Save the greeting in the parent via callback
+        setGreetingCallback(greetingText);
 
-           const voices = speechSynthesis.getVoices();
-           console.log(voices);
+        const ttsResponse = await fetch(
+          "http://localhost:5000/ai_speech/generate-audio",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: greetingText, gender: aigender }), // Use greetingText directly
+          }
+        );
 
-           const maleVoice =
-             voices.find(
-               (voice) =>
-                 voice.name === "Microsoft Mark - English (United States)"
-             ) || null;
-           const femaleVoice =
-             voices.find(
-               (voice) =>
-                 voice.name === "Microsoft Zira - English (United States)"
-             ) || null;
+        if (!ttsResponse.ok) {
+          throw new Error("Error fetching audio.");
+        }
 
-           utterance.voice = aigender === "female" ? femaleVoice : maleVoice;
-
-           utterance.onend = () => {
-             console.log("Greeting finished playing.");
-             setIsProcessing(false); // Reset processing state when greeting ends
-           };
-
-           speechSynthesis.speak(utterance);
-         } catch (error) {
-           console.error("Error generating or playing greeting:", error);
-           setMessage("Failed to generate greeting.");
-           setIsProcessing(false); // Reset processing state on error
-         }
-       };
-       
-    const handleDetection = (data: { gender?: string }) => {
-      console.log("Received detection data:", data);
-
-      if (data.gender) {
-        setMessage(`Gender Detected: ${data.gender}`);
-        setUsergender(data.gender);
-      } else {
-        setMessage("No Person Detected");
-        setUsergender("");
+        const audioBlob = await ttsResponse.blob();
+        await playAudioBlob(audioBlob);
+      } catch (error) {
+        console.error("Error generating or playing greeting:", error);
       }
     };
 
     socket.on("detection", playGreeting);
-    socket.on("detection", handleDetection);
-
-    socket.on("disconnect", () => {
-      console.log("Disconnected from server. Attempting to reconnect...");
-      socket.connect();
-    });
 
     return () => {
-      socket.off("detection", playGreeting);
-      // socket.off("detection", handleDetection);
+      socket.off("detection", playGreeting); // Proper cleanup
       socket.disconnect();
     };
-  }, [aigender]);
+  }, [aigender, setGreetingCallback]);
 
-  return (
-    <div>
-      <div>{message}</div>
-      {greeting && <div>Greeting: {greeting}</div>}
-      {usergender && <div>Detected Gender: {usergender}</div>}
-    </div>
-  );
+  return null; // Component runs in the background and is invisible
 };
 
 export default WebSocketGreeting;
