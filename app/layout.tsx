@@ -36,7 +36,7 @@ function ChildComponent({children}: { children: React.ReactNode }) {
     return (
         <div
             style={{
-                backgroundImage: background ? `url(${background})` : 'url("/bg/background1.png")',
+                backgroundImage: background ? `url(/bg/${background})` : 'url("/bg/background1.png")',
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",

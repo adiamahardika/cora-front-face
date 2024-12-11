@@ -1,43 +1,26 @@
 'use client';
 
-import { useContext, useState, useEffect } from "react";
-import { useDropzone } from 'react-dropzone';
+import {useContext, useEffect} from "react";
+
 import {
     DrawerContent,
     DrawerHeader,
     DrawerTitle
 } from "@/components/ui/drawer";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Slider} from "@/components/ui/slider";
 
 import classes from './drawer.module.css';
 import AvatarContext from "@/components/avatar/avatar-context";
-import { Separator } from "@/components/ui/separator";
-import { IconSquareRoundedPlus } from "@tabler/icons-react";
-
+import {Separator} from "@/components/ui/separator";
+import {IconSquareRoundedPlus} from "@tabler/icons-react";
 
 export default function DrawerComponent() {
-    const { isCollapse, setIsCollapse, background, setBackground } = useContext(AvatarContext);
-    const [error, setError] = useState<string | null>(null); // Menyimpan pesan error jika ada masalah
-    const [selectedFile, setSelectedFile] = useState<File | null>(null); // Menyimpan file yang dipilih untuk diupload
-
-    const { getRootProps, getInputProps } = useDropzone({
-        onDrop: (acceptedFiles, rejectedFiles) => {
-            if (acceptedFiles.length > 0) {
-                setError(null); // Clear error jika file diterima
-                setSelectedFile(acceptedFiles[0]); // Menyimpan file yang diterima
-                setBackground(URL.createObjectURL(acceptedFiles[0])); // Mengubah gambar menjadi URL dan menetapkannya sebagai background
-            }
-            if (rejectedFiles.length > 0) {
-                setError('Only image files are accepted.');
-            }
-        }
-    });
+    const {isCollapse, setIsCollapse, background, setBackground} = useContext(AvatarContext);
 
     const toggleCollapse = () => {
         setIsCollapse(!isCollapse);
     };
-
 
     const handleSetBackground = (imageName: string) => {
         setBackground(imageName);
@@ -45,10 +28,10 @@ export default function DrawerComponent() {
 
     // Array of background images
     const backgroundImages = [
-        "/bg/background1.png",
-        "/bg/background2.png",
-        "/bg/background3.png",
-        "/bg/background4.png",
+        "background1.png",
+        "background2.png",
+        "background3.png",
+        "background4.png",
     ];
 
     useEffect(() => {
@@ -69,14 +52,14 @@ export default function DrawerComponent() {
                             alt="background"
                             className={`rounded - md object-cover ${classes.toggleImg}`}
                             onClick={toggleCollapse}
-                            style={{ cursor: "pointer" }}
+                            style={{cursor: "pointer"}}
                         />
                     </div>
                     <div className={classes.item}>
                         <p>Font Family</p>
                         <Select>
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Inter" />
+                                <SelectValue placeholder="Inter"/>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="light">Inter</SelectItem>
@@ -90,7 +73,7 @@ export default function DrawerComponent() {
                         <p>Font Size</p>
                         <Select>
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Medium" />
+                                <SelectValue placeholder="Medium"/>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="light">Medium</SelectItem>
@@ -102,14 +85,14 @@ export default function DrawerComponent() {
                     <div className={classes.item}>
                         <p>Volume</p>
                         <div className={classes.slider}>
-                            <Slider defaultValue={[50]} max={100} step={1} />
+                            <Slider defaultValue={[50]} max={100} step={1}/>
                         </div>
                     </div>
                     <div className={classes.item}>
                         <p>Gaya Bahasa</p>
                         <Select>
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Santai" />
+                                <SelectValue placeholder="Santai"/>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="light">Santai</SelectItem>
@@ -122,7 +105,7 @@ export default function DrawerComponent() {
                         <p>Tema</p>
                         <Select>
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Santai" />
+                                <SelectValue placeholder="Santai"/>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="light">Santai</SelectItem>
@@ -131,43 +114,32 @@ export default function DrawerComponent() {
                             </SelectContent>
                         </Select>
                     </div>
-
                 </div>
                 {isCollapse && (
                     <>
-                        <Separator orientation={"vertical"} />
+                        <Separator orientation={"vertical"}/>
                         <div
                             className={`${classes.background} overflow-y-auto`}
-                            style={{ maxHeight: "calc(100vh - 100px)" }}
+                            style={{maxHeight: "calc(100vh - 100px)"}}
                         >
                             <div
                                 className={`${classes.upload} rounded-md`}
-                                {...getRootProps()} // Menambahkan properti dropzone
+                                // onClick={() => <>}
                             >
-                                <input {...getInputProps()} /> {/* Input file */}
-                                <IconSquareRoundedPlus size={32} />
-
+                                <IconSquareRoundedPlus size={32}/>
                             </div>
-                            {error && <p className="text-red-500 mt-2">{error}</p>}
-                            {selectedFile && (
-                                <img
-                                    src={URL.createObjectURL(selectedFile)} // Menampilkan preview gambar yang dipilih
-                                    alt="Selected background"
-                                    className={classes.img}
-                                    onClick={() => handleSetBackground(URL.createObjectURL(selectedFile))}
-                                />
-
-                            )}
+                            {/*{background && (*/}
+                            {/*    <img src={`/bg/${background}`} alt="Selected Background" className={classes.img}/>*/}
+                            {/*)}*/}
                             {backgroundImages.map((image, index) => (
                                 <img
                                     key={index}
-                                    src={`${image}`}
+                                    src={`/bg/${image}`}
                                     alt={`Background ${index + 1}`}
                                     className={classes.img}
                                     onClick={() => handleSetBackground(image)}
                                 />
                             ))}
-
                         </div>
                     </>
                 )}

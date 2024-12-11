@@ -33,7 +33,7 @@ export default function PickPage() {
                 <div className={classes.hidden}>
                     <IconSettings/>
                 </div>
-                <WebSocketGreeting aigender= {avatar}/>
+                {/*<WebSocketGreeting aigender= {avatar}/>*/}
             </div>
         </div>
     )
