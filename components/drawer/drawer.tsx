@@ -1,7 +1,7 @@
 'use client';
 
-import {useContext, useEffect} from "react";
-
+import {useContext, useState, useEffect} from 'react';
+import {useDropzone} from 'react-dropzone';
 import {
     DrawerContent,
     DrawerHeader,
@@ -15,8 +15,87 @@ import AvatarContext from "@/components/avatar/avatar-context";
 import {Separator} from "@/components/ui/separator";
 import {IconSquareRoundedPlus} from "@tabler/icons-react";
 
+const dbName = "BackgroundDB";
+const storeName = "BackgroundImages";
+
+const openDB = () => {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(dbName, 1);
+
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(storeName)) {
+                db.createObjectStore(storeName, {keyPath: "id"});
+            }
+        };
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+};
+
+const saveToIndexedDB = async (key, file) => {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            const transaction = db.transaction(storeName, "readwrite");
+            const store = transaction.objectStore(storeName);
+
+            store.put({id: key, data: reader.result});
+
+            transaction.oncomplete = () => resolve();
+            transaction.onerror = () => reject(transaction.error);
+        };
+
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+    });
+};
+
+
+const getFromIndexedDB = async (key: any) => {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(storeName, "readonly");
+        const store = transaction.objectStore(storeName);
+        const request = store.get(key);
+
+        request.onsuccess = () => resolve(request.result?.data || null);
+        request.onerror = () => reject(request.error);
+    });
+};
+
 export default function DrawerComponent() {
-    const {isCollapse, setIsCollapse, background, setBackground} = useContext(AvatarContext);
+    const {isCollapse, setIsCollapse, setBackground} = useContext(AvatarContext);
+    const [error, setError] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [savedFile, setSavedFile] = useState<string | null>(null);
+
+    const {getRootProps, getInputProps} = useDropzone({
+        onDrop: async (acceptedFiles, rejectedFiles) => {
+            if (acceptedFiles.length > 0) {
+                const file = acceptedFiles[0];
+                setError(null);
+                const reader = new FileReader();
+
+                reader.onloadend = () => {
+                    const fileUrl = reader.result;
+                    setBackground(fileUrl); // Tetapkan sebagai background
+                    setSelectedFile(fileUrl); // Simpan URL hasil pembacaan
+                    setSavedFile(fileUrl); // Perbarui state untuk ditampilkan
+                    saveToIndexedDB("backgroundImage", file); // Simpan di IndexedDB
+                };
+                reader.readAsDataURL(file);
+            }
+            if (rejectedFiles.length > 0) {
+                setError("Only image files are accepted.");
+            }
+        }
+
+
+    });
 
     const toggleCollapse = () => {
         setIsCollapse(!isCollapse);
@@ -28,15 +107,23 @@ export default function DrawerComponent() {
 
     // Array of background images
     const backgroundImages = [
-        "background1.png",
-        "background2.png",
-        "background3.png",
-        "background4.png",
+        "/bg/background1.png",
+        "/bg/background2.png",
+        "/bg/background3.png",
+        "/bg/background4.png",
     ];
 
     useEffect(() => {
-        console.log(isCollapse);
-    }, [isCollapse]);
+        const loadSavedImage = async () => {
+            const savedImage = await getFromIndexedDB("backgroundImage");
+            if (savedImage) {
+                setBackground(savedImage); // Tetapkan sebagai background
+                setSavedFile(savedImage); // Simpan URL/Base64 ke state
+            }
+        };
+
+        loadSavedImage();
+    }, []);
 
     return (
         <DrawerContent isCollapse={isCollapse}>
@@ -114,6 +201,7 @@ export default function DrawerComponent() {
                             </SelectContent>
                         </Select>
                     </div>
+
                 </div>
                 {isCollapse && (
                     <>
@@ -124,22 +212,31 @@ export default function DrawerComponent() {
                         >
                             <div
                                 className={`${classes.upload} rounded-md`}
-                                // onClick={() => <>}
+                                {...getRootProps()} // Menambahkan properti dropzone
                             >
+                                <input {...getInputProps()} /> {/* Input file */}
                                 <IconSquareRoundedPlus size={32}/>
+
                             </div>
-                            {/*{background && (*/}
-                            {/*    <img src={`/bg/${background}`} alt="Selected Background" className={classes.img}/>*/}
-                            {/*)}*/}
+                            {error && <p className="text-red-500 mt-2">{error}</p>}
+                            {(savedFile || selectedFile) && (
+                                <img
+                                    src={savedFile || selectedFile}
+                                    alt="Selected background"
+                                    className={classes.img}
+                                    onClick={() => handleSetBackground(savedFile || selectedFile)}
+                                />
+                            )}
                             {backgroundImages.map((image, index) => (
                                 <img
                                     key={index}
-                                    src={`/bg/${image}`}
+                                    src={`${image}`}
                                     alt={`Background ${index + 1}`}
                                     className={classes.img}
                                     onClick={() => handleSetBackground(image)}
                                 />
                             ))}
+
                         </div>
                     </>
                 )}

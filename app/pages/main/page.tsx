@@ -36,6 +36,7 @@ export default function PickPage() {
           <IconSettings />
         </div>
         {/* IDK, MY BRAIN HURTS, I FIX MORNING IF NOT RETURN GREETING IN VARIABLE*/}
+        {/*  OOOOOOOO AM BLINDED BY THE LIGHT  */}
         <WebSocketGreeting
           aigender={avatar}
           setGreetingCallback={setGreeting}
