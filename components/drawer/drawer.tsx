@@ -23,7 +23,7 @@ const openDB = () => {
         const request = indexedDB.open(dbName, 1);
 
         request.onupgradeneeded = (event) => {
-            const db = event.target.result;
+            const db = event?.target?.result;
             if (!db.objectStoreNames.contains(storeName)) {
                 db.createObjectStore(storeName, {keyPath: "id"});
             }
@@ -55,7 +55,7 @@ const saveToIndexedDB = async (key, file) => {
 };
 
 
-const getFromIndexedDB = async (key: any) => {
+export const getFromIndexedDB = async (key: any) => {
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, "readonly");
@@ -68,10 +68,9 @@ const getFromIndexedDB = async (key: any) => {
 };
 
 export default function DrawerComponent() {
-    const {isCollapse, setIsCollapse, setBackground} = useContext(AvatarContext);
+    const {isCollapse, setIsCollapse, setBackground, savedFile, setSavedFile} = useContext(AvatarContext);
     const [error, setError] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [savedFile, setSavedFile] = useState<string | null>(null);
 
     const {getRootProps, getInputProps} = useDropzone({
         onDrop: async (acceptedFiles, rejectedFiles) => {
@@ -112,18 +111,6 @@ export default function DrawerComponent() {
         "/bg/background3.png",
         "/bg/background4.png",
     ];
-
-    useEffect(() => {
-        const loadSavedImage = async () => {
-            const savedImage = await getFromIndexedDB("backgroundImage");
-            if (savedImage) {
-                setBackground(savedImage); // Tetapkan sebagai background
-                setSavedFile(savedImage); // Simpan URL/Base64 ke state
-            }
-        };
-
-        loadSavedImage();
-    }, []);
 
     return (
         <DrawerContent isCollapse={isCollapse}>

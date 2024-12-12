@@ -4,9 +4,10 @@ import AvatarContext from "@/components/avatar/avatar-context";
 import {useContext, useState, useEffect} from "react";
 import {useRouter} from "next/navigation";
 import Loading from "@/components/loading/loading";
+import {getFromIndexedDB} from "@/components/drawer/drawer";
 
 export default function PickPage() {
-    const {setAvatar} = useContext(AvatarContext);
+    const {setAvatar, setSavedFile, setBackground} = useContext(AvatarContext);
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true); // For initial fake loading
     const [isAvatarLoading, setIsAvatarLoading] = useState(false); // For fake loading after avatar selection
@@ -25,6 +26,18 @@ export default function PickPage() {
             router.push('/pages/main');
         }, 500);
     };
+
+    useEffect(() => {
+        const loadSavedImage = async () => {
+            const savedImage = await getFromIndexedDB("backgroundImage");
+            if (savedImage) {
+                setBackground(savedImage); // Tetapkan sebagai background
+                setSavedFile(savedImage); // Simpan URL/Base64 ke state
+            }
+        };
+
+        loadSavedImage();
+    }, []);
 
     return (
         <div className={classes.body}>
