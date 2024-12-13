@@ -40,6 +40,8 @@ export default function PickPage() {
           aigender={avatar}
           setGreetingCallback={setGreeting}
         /> 
+        {/* text for greeting is returned in usestate greeting */}
+        {/* <h1 style={{color:'black'}}>{greeting}</h1> */}
       </div>
     </div>
   );
