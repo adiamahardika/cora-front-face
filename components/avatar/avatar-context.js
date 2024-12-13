@@ -8,6 +8,7 @@ export const AvatarProvider = ({ children }) => {
     const [avatar, setAvatar] = useState(null);
     const [background, setBackground] = useState(null);
     const [isCollapse, setIsCollapse] = useState(false);
+    const [savedFile, setSavedFile] = useState(null);
 
     // Load avatar from localStorage on component mount
     useEffect(() => {
@@ -60,7 +61,9 @@ export const AvatarProvider = ({ children }) => {
                 background,
                 setBackground,
                 isCollapse,
-                setIsCollapse
+                setIsCollapse,
+                savedFile,
+                setSavedFile
             }}
         >
             {children}
