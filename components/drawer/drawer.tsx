@@ -14,6 +14,7 @@ import classes from './drawer.module.css';
 import AvatarContext from "@/components/avatar/avatar-context";
 import {Separator} from "@/components/ui/separator";
 import {IconSquareRoundedPlus} from "@tabler/icons-react";
+import FontSelector from "@/components/font-selector/font-selector";
 
 const dbName = "BackgroundDB";
 const storeName = "BackgroundImages";
@@ -81,10 +82,10 @@ export default function DrawerComponent() {
 
                 reader.onloadend = () => {
                     const fileUrl = reader.result;
-                    setBackground(fileUrl); // Tetapkan sebagai background
-                    setSelectedFile(fileUrl); // Simpan URL hasil pembacaan
-                    setSavedFile(fileUrl); // Perbarui state untuk ditampilkan
-                    saveToIndexedDB("backgroundImage", file); // Simpan di IndexedDB
+                    setBackground(fileUrl);
+                    setSelectedFile(fileUrl);
+                    setSavedFile(fileUrl);
+                    saveToIndexedDB("backgroundImage", file);
                 };
                 reader.readAsDataURL(file);
             }
@@ -130,31 +131,8 @@ export default function DrawerComponent() {
                         />
                     </div>
                     <div className={classes.item}>
-                        <p>Font Family</p>
-                        <Select>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Inter"/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="light">Inter</SelectItem>
-                                <SelectItem value="light">Poppins</SelectItem>
-                                <SelectItem value="dark">+ Jakarta Sans</SelectItem>
-                                <SelectItem value="system">Helvetica</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className={classes.item}>
-                        <p>Font Size</p>
-                        <Select>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Medium"/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="light">Medium</SelectItem>
-                                <SelectItem value="light">Small</SelectItem>
-                                <SelectItem value="dark">Big</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <p>Font</p>
+                        <FontSelector/>
                     </div>
                     <div className={classes.item}>
                         <p>Volume</p>
@@ -179,12 +157,12 @@ export default function DrawerComponent() {
                         <p>Tema</p>
                         <Select>
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Santai"/>
+                                <SelectValue placeholder="Dark"/>
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="light">Santai</SelectItem>
-                                <SelectItem value="dark">Tegas</SelectItem>
-                                <SelectItem value="system">Normal</SelectItem>
+                                <SelectItem value="light">Dark</SelectItem>
+                                <SelectItem value="dark">Light</SelectItem>
+                                <SelectItem value="system">System</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -199,17 +177,16 @@ export default function DrawerComponent() {
                         >
                             <div
                                 className={`${classes.upload} rounded-md`}
-                                {...getRootProps()} // Menambahkan properti dropzone
+                                {...getRootProps()}
                             >
                                 <input {...getInputProps()} /> {/* Input file */}
                                 <IconSquareRoundedPlus size={32}/>
 
                             </div>
                             {error && <p className="text-red-500 mt-2">{error}</p>}
-                            {(savedFile || selectedFile || background) && (
+                            {(savedFile || selectedFile) && (
                                 <img
-                                    src={background}
-                                    alt="Selected background"
+                                    src={savedFile || selectedFile}
                                     className={classes.img}
                                     onClick={() => handleSetBackground(savedFile || selectedFile)}
                                 />
