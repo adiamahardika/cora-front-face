@@ -68,7 +68,7 @@ export const getFromIndexedDB = async (key: any) => {
 };
 
 export default function DrawerComponent() {
-    const {isCollapse, setIsCollapse, setBackground, savedFile, setSavedFile} = useContext(AvatarContext);
+    const {isCollapse, setIsCollapse, background, setBackground, savedFile, setSavedFile} = useContext(AvatarContext);
     const [error, setError] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -122,7 +122,7 @@ export default function DrawerComponent() {
                     <div className={classes.item}>
                         <p>Background</p>
                         <img
-                            src={`/bg/background1.png`}
+                            src={background}
                             alt="background"
                             className={`rounded - md object-cover ${classes.toggleImg}`}
                             onClick={toggleCollapse}
@@ -206,9 +206,9 @@ export default function DrawerComponent() {
 
                             </div>
                             {error && <p className="text-red-500 mt-2">{error}</p>}
-                            {(savedFile || selectedFile) && (
+                            {(savedFile || selectedFile || background) && (
                                 <img
-                                    src={savedFile || selectedFile}
+                                    src={background}
                                     alt="Selected background"
                                     className={classes.img}
                                     onClick={() => handleSetBackground(savedFile || selectedFile)}

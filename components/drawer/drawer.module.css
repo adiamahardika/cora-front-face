@@ -53,8 +53,9 @@
 }
 
 .img {
-    width: 250px !important;
+    width: 250px;
     aspect-ratio: 16 / 9;
+    background-size: cover;
     cursor: pointer;
     transition: all 0.2s ease-out;
     border-radius: 6px;
@@ -69,7 +70,8 @@
 }
 
 .toggleImg {
-    width: 48px;
+    aspect-ratio: 16 / 9;
+    width: 60px;
     object-fit: cover;
     transition: all 0.2s ease-out;
 }
