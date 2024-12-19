@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 const WebSocketGreeting = ({
@@ -10,6 +10,8 @@ const WebSocketGreeting = ({
   aigender: string;
   setGreetingCallback: (greeting: string) => void;
 }) => {
+  const [isProcessing, setIsProcessing] = useState(false); // State to track if processing
+
   useEffect(() => {
     const socket = io("http://localhost:5000", {
       transports: ["websocket"],
@@ -31,15 +33,26 @@ const WebSocketGreeting = ({
       }
     };
 
-    const playGreeting = async (data: { gender: string; time: any }) => {
-      console.log("Processing detection data:", data);
+    const playGreeting = async (data: {
+      gender: string;
+      time: any;
+      emotion: any;
+    }) => {
+      if (isProcessing) return; // Ignore emit if already processing
+      setIsProcessing(true); // Set processing state to true
+
       try {
+        console.log("Processing detection data:", data);
         const response = await fetch(
           "http://localhost:5000/ai_speech/generate-greeting",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: data.gender, time: data.time }),
+            body: JSON.stringify({
+              text: data.gender,
+              time: data.time,
+              emotion: data.emotion,
+            }),
           }
         );
 
@@ -49,9 +62,6 @@ const WebSocketGreeting = ({
 
         const result = await response.json();
         const greetingText = result.text;
-
-        // Save the greeting in the parent via callback
-        setGreetingCallback(greetingText);
 
         const ttsResponse = await fetch(
           "http://localhost:5000/ai_speech/generate-audio",
@@ -67,19 +77,33 @@ const WebSocketGreeting = ({
         }
 
         const audioBlob = await ttsResponse.blob();
+        // Save the greeting in the parent via callback
+        setGreetingCallback(greetingText);
         await playAudioBlob(audioBlob);
       } catch (error) {
         console.error("Error generating or playing greeting:", error);
+      } finally {
+        setIsProcessing(false); // Reset processing state after completion
       }
     };
 
-    socket.on("detection", playGreeting);
+    const handleDetection = (data: {
+      gender: string;
+      time: any;
+      emotion: any;
+    }) => {
+      if (!isProcessing) {
+        playGreeting(data);
+      }
+    };
+
+    socket.on("detection", handleDetection);
 
     return () => {
-      socket.off("detection", playGreeting); // Proper cleanup
+      socket.off("detection", handleDetection); // Proper cleanup
       socket.disconnect();
     };
-  }, [aigender, setGreetingCallback]);
+  }, [aigender, setGreetingCallback, isProcessing]);
 
   return null; // Component runs in the background and is invisible
 };
