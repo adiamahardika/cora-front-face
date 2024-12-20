@@ -13,13 +13,14 @@
     padding: 16px;
     background-color: var(--black);
     display: flex;
+    border-radius: 5px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    flex-grow: 1; /* Main section grows to take remaining space */
+    flex-grow: 1;
 }
 
 .hidden {
