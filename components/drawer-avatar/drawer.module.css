@@ -1,0 +1,61 @@
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0;
+    gap: 1rem;
+}
+
+.wrapper {
+    width: 100%;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    transition: all 0.3s ease-in-out; /* Animate padding, gap, or layout changes */
+}
+
+.card {
+    color: var(--black);
+    width: 100%;
+    height: 7rem;
+    background-color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    overflow: hidden;
+}
+
+.cardAdd {
+    color: var(--black);
+    width: 100%;
+    height: 7rem;
+    background-color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    overflow: hidden;
+}
+
+.img {
+    width: 6rem;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+.active {
+    border: 2px solid red;
+}
+
+.hidden {
+    opacity: 0;
+}

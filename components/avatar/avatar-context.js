@@ -4,7 +4,7 @@ import {createContext, useState, useEffect} from 'react';
 const AvatarContext = createContext();
 
 export const AvatarProvider = ({children}) => {
-    const [avatar, setAvatar] = useState(() => localStorage.getItem('avatar') || '');
+    const [avatar, setAvatar] = useState(() => localStorage.getItem('avatar') || 'male');
     const [background, setBackground] = useState(() => localStorage.getItem('background') || '/bg/background1.png');
     const [isCollapse, setIsCollapse] = useState(() => localStorage.getItem('isCollapse') === 'true');
     const [savedFile, setSavedFile] = useState(null);

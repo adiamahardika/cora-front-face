@@ -58,7 +58,7 @@ const saveToIndexedDB = async (key: string, file: Blob) => {
 };
 
 
-export const getFromIndexedDB = async (key: never) => {
+export const getFromIndexedDB = async (key: string) => {
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, "readonly");
@@ -70,7 +70,7 @@ export const getFromIndexedDB = async (key: never) => {
     });
 };
 
-export default function DrawerComponent() {
+export default function DrawerComponentSettings() {
     const {isCollapse, setIsCollapse, background, setBackground, savedFile, setSavedFile} = useContext(AvatarContext);
     const [error, setError] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);

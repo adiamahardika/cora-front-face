@@ -1,7 +1,7 @@
-import PickPage from "@/app/pages/pick/page";
+import MainPage from "@/app/pages/main/page";
 
 export default function Home() {
   return (
-    <PickPage/>
+    <MainPage/>
   );
 }
