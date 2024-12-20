@@ -17,7 +17,12 @@ export default function RootLayout({
     return (
         <html lang="id">
         <body>
-        <ThemeProvider attribute="class" defaultTheme="dark">
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
             <AvatarProvider>
                 <ChildComponent>{children}</ChildComponent>
             </AvatarProvider>

@@ -10,6 +10,8 @@ export const AvatarProvider = ({children}) => {
     const [savedFile, setSavedFile] = useState(null);
     const [fontFamily, setFontFamily] = useState(() => localStorage.getItem('fontFamily') || 'Inter');
     const [volume, setVolume] = useState(() => localStorage.getItem('volume') || 80);
+    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'system');
+    const [tone, setTone] = useState(() => localStorage.getItem('tone') || 'professional');
 
     useEffect(() => {
         if (avatar) {
@@ -35,6 +37,14 @@ export const AvatarProvider = ({children}) => {
         localStorage.setItem('volume', volume)
     }, [volume]);
 
+    useEffect(() => {
+        localStorage.setItem('theme', theme)
+    }, [theme]);
+
+    useEffect(() => {
+        localStorage.setItem('tone', tone)
+    }, [tone]);
+
     return (
         <AvatarContext.Provider
             value={{
@@ -50,6 +60,10 @@ export const AvatarProvider = ({children}) => {
                 setFontFamily,
                 volume,
                 setVolume,
+                theme,
+                setTheme,
+                tone,
+                setTone,
             }}
         >
             {children}

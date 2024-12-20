@@ -16,6 +16,7 @@ import {Separator} from "@/components/ui/separator";
 import {IconSquareRoundedPlus} from "@tabler/icons-react";
 import FontSelector from "@/components/font-selector/font-selector";
 import VolumeSliderComponent from "@/components/slider-volume/slider";
+import ThemeSelector from "@/components/theme-selector/theme-selector";
 
 const dbName = "BackgroundDB";
 const storeName = "BackgroundImages";
@@ -148,24 +149,15 @@ export default function DrawerComponent() {
                                 <SelectValue placeholder="Santai"/>
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="light">Santai</SelectItem>
-                                <SelectItem value="dark">Tegas</SelectItem>
-                                <SelectItem value="system">Normal</SelectItem>
+                                <SelectItem value="santai">Santai</SelectItem>
+                                <SelectItem value="professional">Professional</SelectItem>
+                                <SelectItem value="casual">Casual</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                     <div className={classes.item}>
                         <p>Tema</p>
-                        <Select>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Dark"/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="light">Dark</SelectItem>
-                                <SelectItem value="dark">Light</SelectItem>
-                                <SelectItem value="system">System</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <ThemeSelector/>
                     </div>
 
                 </div>
