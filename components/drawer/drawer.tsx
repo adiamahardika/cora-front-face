@@ -15,6 +15,7 @@ import AvatarContext from "@/components/avatar/avatar-context";
 import {Separator} from "@/components/ui/separator";
 import {IconSquareRoundedPlus} from "@tabler/icons-react";
 import FontSelector from "@/components/font-selector/font-selector";
+import VolumeSliderComponent from "@/components/slider-volume/slider";
 
 const dbName = "BackgroundDB";
 const storeName = "BackgroundImages";
@@ -137,7 +138,7 @@ export default function DrawerComponent() {
                     <div className={classes.item}>
                         <p>Volume</p>
                         <div className={classes.slider}>
-                            <Slider defaultValue={[50]} max={100} step={1}/>
+                            <VolumeSliderComponent/>
                         </div>
                     </div>
                     <div className={classes.item}>
