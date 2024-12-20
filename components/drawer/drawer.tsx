@@ -1,14 +1,12 @@
 'use client';
 
-import {useContext, useState, useEffect} from 'react';
+import {useContext, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {
     DrawerContent,
     DrawerHeader,
     DrawerTitle
 } from "@/components/ui/drawer";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Slider} from "@/components/ui/slider";
 
 import classes from './drawer.module.css';
 import AvatarContext from "@/components/avatar/avatar-context";
@@ -22,12 +20,12 @@ import ToneSelector from "@/components/tone-selector/tone-selector";
 const dbName = "BackgroundDB";
 const storeName = "BackgroundImages";
 
-const openDB = () => {
+const openDB = (): Promise<IDBDatabase> => {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(dbName, 1);
 
         request.onupgradeneeded = (event) => {
-            const db = event?.target?.result;
+            const db = (event.target as IDBRequest).result;
             if (!db.objectStoreNames.contains(storeName)) {
                 db.createObjectStore(storeName, {keyPath: "id"});
             }
@@ -38,9 +36,10 @@ const openDB = () => {
     });
 };
 
-const saveToIndexedDB = async (key, file) => {
+
+const saveToIndexedDB = async (key: string, file: Blob) => {
     const db = await openDB();
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         const reader = new FileReader();
 
         reader.onloadend = () => {
@@ -59,7 +58,7 @@ const saveToIndexedDB = async (key, file) => {
 };
 
 
-export const getFromIndexedDB = async (key: any) => {
+export const getFromIndexedDB = async (key: never) => {
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, "readonly");
@@ -86,6 +85,8 @@ export default function DrawerComponent() {
                 reader.onloadend = () => {
                     const fileUrl = reader.result;
                     setBackground(fileUrl);
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
                     setSelectedFile(fileUrl);
                     setSavedFile(fileUrl);
                     saveToIndexedDB("backgroundImage", file);
