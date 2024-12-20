@@ -17,6 +17,7 @@ import {IconSquareRoundedPlus} from "@tabler/icons-react";
 import FontSelector from "@/components/font-selector/font-selector";
 import VolumeSliderComponent from "@/components/slider-volume/slider";
 import ThemeSelector from "@/components/theme-selector/theme-selector";
+import ToneSelector from "@/components/tone-selector/tone-selector";
 
 const dbName = "BackgroundDB";
 const storeName = "BackgroundImages";
@@ -144,16 +145,7 @@ export default function DrawerComponent() {
                     </div>
                     <div className={classes.item}>
                         <p>Gaya Bahasa</p>
-                        <Select>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Santai"/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="santai">Santai</SelectItem>
-                                <SelectItem value="professional">Professional</SelectItem>
-                                <SelectItem value="casual">Casual</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <ToneSelector/>
                     </div>
                     <div className={classes.item}>
                         <p>Tema</p>
