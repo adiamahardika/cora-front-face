@@ -12,13 +12,13 @@ export default function MainPage() {
     const [greeting, setGreeting] = useState("");
     const [isSpeaking, setIsSpeaking] = useState(false);
 
-    // useEffect(() => {
-    //     if (greeting) {
-    //         setIsSpeaking(true);
-    //         const timer = setTimeout(() => setIsSpeaking(false), 3000);
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [greeting]);
+    useEffect(() => {
+        if (greeting) {
+            setIsSpeaking(true);
+            const timer = setTimeout(() => setIsSpeaking(false), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [greeting]);
 
     return (
         <div className={classes.body}>
@@ -27,7 +27,7 @@ export default function MainPage() {
                     <IconSettings/>
                 </div>
                 <div className={classes.wrapperImg}>
-                    <BubbleComponent content={greeting}/>
+                    <BubbleComponent content={greeting} isVisible={isSpeaking}/>
                     <div className={classes.imgContainer}>
                         {isSpeaking ?
                             <img className={classes.imgProfile} src={`/${avatar}.gif`}/> :
@@ -44,6 +44,7 @@ export default function MainPage() {
                 <WebSocketGreeting
                     aigender={avatar}
                     setGreetingCallback={setGreeting}
+                    setTalking={setIsSpeaking}
                 />
             </div>
         </div>
