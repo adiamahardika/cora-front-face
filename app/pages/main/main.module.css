@@ -34,18 +34,11 @@
     opacity: 0;
 }
 
-.imgProfile {
-    width: 100%;
-    height: auto;
-    position: relative; /* Keep avatar in normal flow */
-    z-index: 1; /* Ensure avatar is below the GIF */
-}
-
-.imgContainer {
-    position: relative; /* Create a positioning context */
-    width: 500px; /* Adjust as needed */
-    max-width: 100%;
-    height: auto;
+.wrapperImg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
 }
 
 .gif {
