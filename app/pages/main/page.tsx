@@ -6,7 +6,7 @@ import IconSettings from "@/components/icon/icon";
 import BubbleComponent from "@/components/bubble-container/bubble";
 import WebSocketGreeting from '@/components/welcome/welcome';
 
-export default function PickPage() {
+export default function MainPage() {
   const { avatar } = useContext(AvatarContext);
   // State to store the greeting
   const [greeting, setGreeting] = useState("");

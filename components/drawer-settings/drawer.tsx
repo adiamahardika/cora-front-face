@@ -1,30 +1,31 @@
 'use client';
 
-import {useContext, useState, useEffect} from 'react';
+import {useContext, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {
     DrawerContent,
     DrawerHeader,
     DrawerTitle
 } from "@/components/ui/drawer";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Slider} from "@/components/ui/slider";
 
 import classes from './drawer.module.css';
 import AvatarContext from "@/components/avatar/avatar-context";
 import {Separator} from "@/components/ui/separator";
 import {IconSquareRoundedPlus} from "@tabler/icons-react";
 import FontSelector from "@/components/font-selector/font-selector";
+import VolumeSliderComponent from "@/components/slider-volume/slider";
+import ThemeSelector from "@/components/theme-selector/theme-selector";
+import ToneSelector from "@/components/tone-selector/tone-selector";
 
 const dbName = "BackgroundDB";
 const storeName = "BackgroundImages";
 
-const openDB = () => {
+const openDB = (): Promise<IDBDatabase> => {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(dbName, 1);
 
         request.onupgradeneeded = (event) => {
-            const db = event?.target?.result;
+            const db = (event.target as IDBRequest).result;
             if (!db.objectStoreNames.contains(storeName)) {
                 db.createObjectStore(storeName, {keyPath: "id"});
             }
@@ -35,9 +36,10 @@ const openDB = () => {
     });
 };
 
-const saveToIndexedDB = async (key, file) => {
+
+const saveToIndexedDB = async (key: string, file: Blob) => {
     const db = await openDB();
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         const reader = new FileReader();
 
         reader.onloadend = () => {
@@ -56,7 +58,7 @@ const saveToIndexedDB = async (key, file) => {
 };
 
 
-export const getFromIndexedDB = async (key: any) => {
+export const getFromIndexedDB = async (key: string) => {
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, "readonly");
@@ -68,7 +70,7 @@ export const getFromIndexedDB = async (key: any) => {
     });
 };
 
-export default function DrawerComponent() {
+export default function DrawerComponentSettings() {
     const {isCollapse, setIsCollapse, background, setBackground, savedFile, setSavedFile} = useContext(AvatarContext);
     const [error, setError] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -83,6 +85,8 @@ export default function DrawerComponent() {
                 reader.onloadend = () => {
                     const fileUrl = reader.result;
                     setBackground(fileUrl);
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
                     setSelectedFile(fileUrl);
                     setSavedFile(fileUrl);
                     saveToIndexedDB("backgroundImage", file);
@@ -137,34 +141,16 @@ export default function DrawerComponent() {
                     <div className={classes.item}>
                         <p>Volume</p>
                         <div className={classes.slider}>
-                            <Slider defaultValue={[50]} max={100} step={1}/>
+                            <VolumeSliderComponent/>
                         </div>
                     </div>
                     <div className={classes.item}>
                         <p>Gaya Bahasa</p>
-                        <Select>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Santai"/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="light">Santai</SelectItem>
-                                <SelectItem value="dark">Tegas</SelectItem>
-                                <SelectItem value="system">Normal</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <ToneSelector/>
                     </div>
                     <div className={classes.item}>
                         <p>Tema</p>
-                        <Select>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Dark"/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="light">Dark</SelectItem>
-                                <SelectItem value="dark">Light</SelectItem>
-                                <SelectItem value="system">System</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <ThemeSelector/>
                     </div>
 
                 </div>

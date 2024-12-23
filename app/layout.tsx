@@ -5,6 +5,7 @@ import {Inter, Poppins} from 'next/font/google';
 import AvatarContext, {AvatarProvider} from "@/components/avatar/avatar-context";
 import {ThemeProvider} from "next-themes";
 import {useContext, useEffect} from "react";
+import {getFromIndexedDB} from "@/components/drawer-settings/drawer";
 
 const inter = Inter({subsets: ['latin']});
 const poppins = Poppins({subsets: ['latin'], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']});
@@ -17,7 +18,12 @@ export default function RootLayout({
     return (
         <html lang="id">
         <body>
-        <ThemeProvider attribute="class" defaultTheme="dark">
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
             <AvatarProvider>
                 <ChildComponent>{children}</ChildComponent>
             </AvatarProvider>
@@ -28,7 +34,7 @@ export default function RootLayout({
 }
 
 function ChildComponent({children}: { children: React.ReactNode }) {
-    const {background, fontFamily} = useContext(AvatarContext);
+    const {background, fontFamily, setSavedFile, setBackground} = useContext(AvatarContext);
 
     useEffect(() => {
         // Dynamically update the font class on the `html` or `body` tag
@@ -41,6 +47,17 @@ function ChildComponent({children}: { children: React.ReactNode }) {
             root.classList.remove(poppins.className);
         }
     }, [fontFamily]);
+
+    useEffect(() => {
+        const loadSavedImage = async () => {
+            const savedImage = await getFromIndexedDB("backgroundImage");
+            if (savedImage) {
+                setBackground(savedImage);
+                setSavedFile(savedImage);
+            }
+        };
+        loadSavedImage();
+    }, []);
 
     return (
         <div

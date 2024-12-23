@@ -4,11 +4,14 @@ import {createContext, useState, useEffect} from 'react';
 const AvatarContext = createContext();
 
 export const AvatarProvider = ({children}) => {
-    const [avatar, setAvatar] = useState(() => localStorage.getItem('avatar') || null);
-    const [background, setBackground] = useState(() => localStorage.getItem('background') || null);
+    const [avatar, setAvatar] = useState(() => localStorage.getItem('avatar') || 'male');
+    const [background, setBackground] = useState(() => localStorage.getItem('background') || '/bg/background1.png');
     const [isCollapse, setIsCollapse] = useState(() => localStorage.getItem('isCollapse') === 'true');
     const [savedFile, setSavedFile] = useState(null);
     const [fontFamily, setFontFamily] = useState(() => localStorage.getItem('fontFamily') || 'Inter');
+    const [volume, setVolume] = useState(() => localStorage.getItem('volume') || 80);
+    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'system');
+    const [tone, setTone] = useState(() => localStorage.getItem('tone') || 'professional');
 
     useEffect(() => {
         if (avatar) {
@@ -30,6 +33,18 @@ export const AvatarProvider = ({children}) => {
         localStorage.setItem('fontFamily', fontFamily || '');
     }, [fontFamily]);
 
+    useEffect(() => {
+        localStorage.setItem('volume', volume)
+    }, [volume]);
+
+    useEffect(() => {
+        localStorage.setItem('theme', theme)
+    }, [theme]);
+
+    useEffect(() => {
+        localStorage.setItem('tone', tone)
+    }, [tone]);
+
     return (
         <AvatarContext.Provider
             value={{
@@ -43,6 +58,12 @@ export const AvatarProvider = ({children}) => {
                 setSavedFile,
                 fontFamily,
                 setFontFamily,
+                volume,
+                setVolume,
+                theme,
+                setTheme,
+                tone,
+                setTone,
             }}
         >
             {children}
