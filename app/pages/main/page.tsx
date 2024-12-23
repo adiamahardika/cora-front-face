@@ -1,24 +1,25 @@
-'use client'
-import classes from './main.module.css'
+'use client';
+import classes from './main.module.css';
 import AvatarContext from "@/components/avatar/avatar-context";
-import {useContext, useEffect, useState} from "react";
+import { useContext, useState, useEffect } from "react";
 import IconSettings from "@/components/icon/icon";
 import BubbleComponent from "@/components/bubble-container/bubble";
 import WebSocketGreeting from '@/components/welcome/welcome';
 
-export default function MainPage() {
+export default function PickPage() {
   const { avatar } = useContext(AvatarContext);
-  // State to store the greeting
   const [greeting, setGreeting] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-useEffect(()=>{
-  if (greeting){
-    setIsSpeaking(true);
-    const timer = setTimeout(()=> setIsSpeaking(false),3000);
-    return () => clearTimeout(timer);
-  }
-},[greeting]);
+  // Mengatur bubble saat ada teks greeting baru
+  useEffect(() => {
+    if (greeting) {
+      setIsSpeaking(true); // Menampilkan bubble
+      const timer = setTimeout(() => setIsSpeaking(false), 3000); // Sembunyikan setelah 3 detik
+      return () => clearTimeout(timer); // Bersihkan timer jika ada update
+    }
+  }, [greeting]);
+
   return (
     <div className={classes.body}>
       <div className={classes.wrapper}>
@@ -26,7 +27,8 @@ useEffect(()=>{
           <IconSettings />
         </div>
         <div className={classes.wrapperImg}>
-          <BubbleComponent content={greeting} />
+          {/* Bubble hanya terlihat saat isSpeaking true */}
+          <BubbleComponent content={greeting} isVisible={isSpeaking} />
           <div className={classes.imgContainer}>
             <img
               src="/mouth.gif"
@@ -45,8 +47,8 @@ useEffect(()=>{
         </div>
         <WebSocketGreeting
           aigender={avatar}
-          setGreetingCallback={setGreeting}
-        /> 
+          setGreetingCallback={setGreeting} // Memperbarui greeting dari WebSocket
+        />
       </div>
     </div>
   );
