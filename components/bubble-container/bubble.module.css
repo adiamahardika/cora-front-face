@@ -3,8 +3,10 @@
     max-width: 1000px;
     min-height: 100px;
     max-height: 500px;
-    display: flex;
+    display: none;
     flex-direction: row;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
     align-items: stretch; /* Ensures all children stretch to the same height */
     justify-content: center;
 }
@@ -23,6 +25,8 @@
     flex-grow: 1;
 }
 
-.hidden {
-    opacity: 0;
+.wrapper.show {
+    display: block;
+    opacity: 1;
 }
+
