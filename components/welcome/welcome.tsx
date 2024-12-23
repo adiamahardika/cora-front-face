@@ -6,9 +6,11 @@ import { io } from "socket.io-client";
 const WebSocketGreeting = ({
   aigender,
   setGreetingCallback,
+  setTalking
 }: {
   aigender: string;
   setGreetingCallback: (greeting: string) => void;
+  setTalking: (talking: boolean) => void;
 }) => {
   const [isProcessing, setIsProcessing] = useState(false); // State to track if processing
 
@@ -79,11 +81,13 @@ const WebSocketGreeting = ({
         const audioBlob = await ttsResponse.blob();
         // Save the greeting in the parent via callback
         setGreetingCallback(greetingText);
+        setTalking(true)
         await playAudioBlob(audioBlob);
       } catch (error) {
         console.error("Error generating or playing greeting:", error);
       } finally {
         setIsProcessing(false); // Reset processing state after completion
+        setTalking(false)
       }
     };
 

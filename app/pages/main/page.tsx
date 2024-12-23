@@ -48,6 +48,7 @@ export default function PickPage() {
         <WebSocketGreeting
           aigender={avatar}
           setGreetingCallback={setGreeting} // Memperbarui greeting dari WebSocket
+          setTalking={setIsSpeaking}
         />
       </div>
     </div>
