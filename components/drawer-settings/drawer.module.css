@@ -36,8 +36,7 @@
 }
 
 .upload {
-    background-color: var(--white);
-    color: var(--black);
+    height: 100%;
     width: 250px;
     aspect-ratio: 16 / 9;
     display: flex;

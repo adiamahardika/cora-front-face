@@ -16,6 +16,7 @@ import FontSelector from "@/components/font-selector/font-selector";
 import VolumeSliderComponent from "@/components/slider-volume/slider";
 import ThemeSelector from "@/components/theme-selector/theme-selector";
 import ToneSelector from "@/components/tone-selector/tone-selector";
+import {Button} from "@/components/ui/button";
 
 const dbName = "BackgroundDB";
 const storeName = "BackgroundImages";
@@ -161,14 +162,14 @@ export default function DrawerComponentSettings() {
                             className={`${classes.background} overflow-y-auto`}
                             style={{maxHeight: "calc(100vh - 100px)"}}
                         >
-                            <div
+                            <Button
                                 className={`${classes.upload} rounded-md`}
                                 {...getRootProps()}
                             >
-                                <input {...getInputProps()} /> {/* Input file */}
-                                <IconSquareRoundedPlus size={32}/>
+                                <input {...getInputProps()} />
+                                <IconSquareRoundedPlus style={{ fontSize: '32px', width: '32px', height: '32px' }} />
 
-                            </div>
+                            </Button>
                             {error && <p className="text-red-500 mt-2">{error}</p>}
                             {(savedFile || selectedFile) && (
                                 <img
