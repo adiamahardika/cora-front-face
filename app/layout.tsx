@@ -52,7 +52,6 @@ function ChildComponent({children}: { children: React.ReactNode }) {
         const loadSavedImage = async () => {
             const savedImage = await getFromIndexedDB("backgroundImage");
             if (savedImage) {
-                setBackground(savedImage);
                 setSavedFile(savedImage);
             }
         };
