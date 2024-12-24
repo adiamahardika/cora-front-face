@@ -28,6 +28,8 @@ const fetchAvatarFromDB = async (id: string): Promise<AvatarData | null> => {
     });
 };
 
+console.log('wee woo')
+
 export default function MainPage() {
     const { avatar } = useContext(AvatarContext); // The avatar ID
     const [avatarData, setAvatarData] = useState<AvatarData | null>(null);
