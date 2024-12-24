@@ -6,6 +6,7 @@ import AvatarContext, {AvatarProvider} from "@/components/avatar/avatar-context"
 import {ThemeProvider} from "next-themes";
 import {useContext, useEffect} from "react";
 import {getFromIndexedDB} from "@/components/drawer-settings/drawer";
+import {Toaster} from "@/components/ui/toaster";
 
 const inter = Inter({subsets: ['latin']});
 const poppins = Poppins({subsets: ['latin'], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']});
@@ -26,6 +27,7 @@ export default function RootLayout({
         >
             <AvatarProvider>
                 <ChildComponent>{children}</ChildComponent>
+                <Toaster/>
             </AvatarProvider>
         </ThemeProvider>
         </body>
@@ -34,7 +36,7 @@ export default function RootLayout({
 }
 
 function ChildComponent({children}: { children: React.ReactNode }) {
-    const {background, fontFamily, setSavedFile, setBackground} = useContext(AvatarContext);
+    const {background, fontFamily, setSavedFile} = useContext(AvatarContext);
 
     useEffect(() => {
         // Dynamically update the font class on the `html` or `body` tag
