@@ -30,27 +30,33 @@ interface AvatarData {
 
 let db: IDBDatabase | null = null;
 
-const openDatabase = (): void => {
-    const request = indexedDB.open('AvatarDatabase', 1);
+const openDatabase = (): Promise<IDBDatabase | null> => {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('AvatarDatabase', 1);
 
-    request.onupgradeneeded = (event) => {
-        db = (event.target as IDBOpenDBRequest).result;
-        if (!db.objectStoreNames.contains('avatars')) {
-            db.createObjectStore('avatars', {keyPath: 'id'});
-        }
-    };
+        request.onupgradeneeded = (event) => {
+            const db = (event.target as IDBOpenDBRequest).result;
+            if (!db.objectStoreNames.contains('avatars')) {
+                db.createObjectStore('avatars', {keyPath: 'id'});
+            }
+        };
 
-    request.onsuccess = (event) => {
-        db = (event.target as IDBOpenDBRequest).result;
-    };
+        request.onsuccess = (event) => {
+            const db = (event.target as IDBOpenDBRequest).result;
+            resolve(db);
+        };
 
-    request.onerror = (event) => {
-        console.error('Database error:', (event.target as IDBOpenDBRequest).error);
-    };
+        request.onerror = (event) => {
+            console.error('Database error:', (event.target as IDBOpenDBRequest).error);
+            reject(new Error('Failed to open IndexedDB'));
+        };
+    });
 };
 
-const saveAvatar = (avatarData: AvatarData): void => {
+const saveAvatar = async (avatarData: AvatarData): Promise<void> => {
+    const db = await openDatabase();
     if (!db) return;
+
     const transaction = db.transaction('avatars', 'readwrite');
     const store = transaction.objectStore('avatars');
     const request = store.add(avatarData);
@@ -60,8 +66,10 @@ const saveAvatar = (avatarData: AvatarData): void => {
     };
 };
 
-const getAllAvatars = (callback: (avatars: AvatarData[]) => void): void => {
+const getAllAvatars = async (callback: (avatars: AvatarData[]) => void): Promise<void> => {
+    const db = await openDatabase();
     if (!db) return;
+
     const transaction = db.transaction('avatars', 'readonly');
     const store = transaction.objectStore('avatars');
     const request = store.getAll();
@@ -76,21 +84,18 @@ const getAllAvatars = (callback: (avatars: AvatarData[]) => void): void => {
 };
 
 const fetchAllAvatarsFromDB = async (): Promise<AvatarData[]> => {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open('AvatarDatabase', 1);
-        request.onsuccess = () => {
-            const db = request.result;
-            const transaction = db.transaction('avatars', 'readonly');
-            const store = transaction.objectStore('avatars');
-            const getAllRequest = store.getAll();
+    const db = await openDatabase();
+    if (!db) return [];
 
-            getAllRequest.onsuccess = () => resolve(getAllRequest.result as AvatarData[]);
-            getAllRequest.onerror = () => reject(new Error('Failed to fetch avatars'));
-        };
-        request.onerror = () => reject(new Error('Failed to open IndexedDB'));
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction('avatars', 'readonly');
+        const store = transaction.objectStore('avatars');
+        const request = store.getAll();
+
+        request.onsuccess = () => resolve(request.result as AvatarData[]);
+        request.onerror = () => reject(new Error('Failed to fetch avatars'));
     });
 };
-
 
 const uploadImageBase64 = (file: File, callback: (base64Image: string) => void): void => {
     if (!file) {
@@ -120,7 +125,7 @@ export default function DrawerComponentAvatar(): JSX.Element {
     const [talkingImage, setTalkingImage] = useState<string | null>(null);
     const idleInputRef = useRef<HTMLInputElement | null>(null);
     const talkingInputRef = useRef<HTMLInputElement | null>(null);
-    const { toast } = useToast()
+    const {toast} = useToast()
 
     useEffect(() => {
         openDatabase();
@@ -174,9 +179,9 @@ export default function DrawerComponentAvatar(): JSX.Element {
     };
 
     useEffect(() => {
-        fetchAllAvatarsFromDB()
-            .then((data) => setAvatars(data))
-            .catch((error) => console.error('Error fetching avatars:', error));
+        openDatabase()
+            .then(() => getAllAvatars(setAvatars))
+            .catch((error) => console.error('Error opening database:', error));
     }, []);
 
     const cardBackgroundColor = theme === 'dark' ? 'var(--white)' : 'var(--black)';
@@ -252,7 +257,7 @@ export default function DrawerComponentAvatar(): JSX.Element {
                                     onChange={handleFileUpload('talking')}
                                 />
                             </div>
-                            <Button onClick={handleSaveAvatar} className={classes.button}>Save Avatar</Button>
+                            <Button onClick={handleSaveAvatar} className={classes.buttonSave}>Save Avatar</Button>
                         </DialogContent>
                     </Dialog>
                 </div>

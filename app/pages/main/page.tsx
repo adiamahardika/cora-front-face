@@ -1,7 +1,7 @@
 'use client';
 import classes from './main.module.css';
 import AvatarContext from "@/components/avatar/avatar-context";
-import { useContext, useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import IconSettings from "@/components/icon/icon";
 import BubbleComponent from "@/components/bubble-container/bubble";
 import WebSocketGreeting from '@/components/welcome/welcome';
@@ -15,15 +15,31 @@ interface AvatarData {
 const fetchAvatarFromDB = async (id: string): Promise<AvatarData | null> => {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open('AvatarDatabase', 1);
+
+        request.onupgradeneeded = (event) => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains('avatars')) {
+                db.createObjectStore('avatars', {keyPath: 'id'}); // Pastikan sesuai dengan struktur data
+            }
+        };
+
         request.onsuccess = () => {
             const db = request.result;
+
+            // Cek apakah object store "avatars" ada sebelum membuat transaksi
+            if (!db.objectStoreNames.contains('avatars')) {
+                resolve(null); // Tidak ada data yang ditemukan
+                return;
+            }
+
             const transaction = db.transaction('avatars', 'readonly');
             const store = transaction.objectStore('avatars');
             const getRequest = store.get(id);
 
-            getRequest.onsuccess = () => resolve(getRequest.result as AvatarData);
+            getRequest.onsuccess = () => resolve(getRequest.result as AvatarData || null);
             getRequest.onerror = () => reject(new Error('Failed to fetch avatar data'));
         };
+
         request.onerror = () => reject(new Error('Failed to open IndexedDB'));
     });
 };
@@ -31,7 +47,7 @@ const fetchAvatarFromDB = async (id: string): Promise<AvatarData | null> => {
 console.log('wee woo')
 
 export default function MainPage() {
-    const { avatar } = useContext(AvatarContext); // The avatar ID
+    const {avatar} = useContext(AvatarContext); // The avatar ID
     const [avatarData, setAvatarData] = useState<AvatarData | null>(null);
     const [greeting, setGreeting] = useState("");
     const [isSpeaking, setIsSpeaking] = useState(false);
@@ -67,10 +83,10 @@ export default function MainPage() {
         <div className={classes.body}>
             <div className={classes.wrapper}>
                 <div className={classes.wrapperIcon}>
-                    <IconSettings />
+                    <IconSettings/>
                 </div>
                 <div className={classes.wrapperImg}>
-                    <BubbleComponent content={greeting} isVisible={isSpeaking} />
+                    <BubbleComponent content={greeting} isVisible={isSpeaking}/>
                     <div className={classes.imgContainer}>
                         {avatarData ? (
                             isSpeaking ? (
@@ -92,7 +108,7 @@ export default function MainPage() {
                     </div>
                 </div>
                 <div className={classes.hidden}>
-                    <IconSettings />
+                    <IconSettings/>
                 </div>
                 <WebSocketGreeting
                     aigender={avatar}
