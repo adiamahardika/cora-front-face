@@ -87,7 +87,6 @@ const WebSocketGreeting = ({
         console.error("Error generating or playing greeting:", error);
       } finally {
         setIsProcessing(false); // Reset processing state after completion
-        setTalking(false)
       }
     };
 
