@@ -29,9 +29,16 @@ const WebSocketGreeting = ({
         const source = audioContext.createBufferSource();
         source.buffer = audioBuffer;
         source.connect(audioContext.destination);
-        source.start();
+
+        return new Promise<void>((resolve) => {
+          source.onended = () => {
+            resolve(); // Resolve the promise when audio finishes playing
+          };
+          source.start();
+        });
       } catch (error) {
         console.error("Error decoding or playing audio:", error);
+        throw error;
       }
     };
 
@@ -65,14 +72,15 @@ const WebSocketGreeting = ({
         const result = await response.json();
         const greetingText = result.text;
 
-        const ttsResponse = await fetch(
-          "http://localhost:5000/ai_speech/generate-audio",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: greetingText, gender: aigender }), // Use greetingText directly
-          }
-        );
+
+         const ttsResponse = await fetch(
+           "http://localhost:5000/ai_speech/generate-audio",
+           {
+             method: "POST",
+             headers: { "Content-Type": "application/json" },
+             body: JSON.stringify({ text: greetingText, gender: aigender }),
+           }
+         );
 
         if (!ttsResponse.ok) {
           throw new Error("Error fetching audio.");
@@ -87,6 +95,7 @@ const WebSocketGreeting = ({
         console.error("Error generating or playing greeting:", error);
       } finally {
         setIsProcessing(false); // Reset processing state after completion
+        setTalking(false);
       }
     };
 
