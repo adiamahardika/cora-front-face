@@ -56,8 +56,8 @@ export default function MainPage() {
     useEffect(() => {
         if (greeting) {
             setIsSpeaking(true);
-            const timer = setTimeout(() => setIsSpeaking(false), 3000);
-            return () => clearTimeout(timer);
+            // const timer = setTimeout(() => setIsSpeaking(false), 3000);
+            // return () => clearTimeout(timer);
         }
     }, [greeting]);
 
