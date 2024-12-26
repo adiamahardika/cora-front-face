@@ -12,44 +12,6 @@ interface AvatarData {
     talkingImage: string | null;
 }
 
-<<<<<<< HEAD
-    
-=======
-const fetchAvatarFromDB = async (id: string): Promise<AvatarData | null> => {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open('AvatarDatabase', 1);
-
-        request.onupgradeneeded = (event) => {
-            const db = request.result;
-            if (!db.objectStoreNames.contains('avatars')) {
-                db.createObjectStore('avatars', {keyPath: 'id'}); // Pastikan sesuai dengan struktur data
-            }
-        };
-
-        request.onsuccess = () => {
-            const db = request.result;
-
-            // Cek apakah object store "avatars" ada sebelum membuat transaksi
-            if (!db.objectStoreNames.contains('avatars')) {
-                resolve(null); // Tidak ada data yang ditemukan
-                return;
-            }
-
-            const transaction = db.transaction('avatars', 'readonly');
-            const store = transaction.objectStore('avatars');
-            const getRequest = store.get(id);
-
-            getRequest.onsuccess = () => resolve(getRequest.result as AvatarData || null);
-            getRequest.onerror = () => reject(new Error('Failed to fetch avatar data'));
-        };
-
-        request.onerror = () => reject(new Error('Failed to open IndexedDB'));
-    });
-};
->>>>>>> 4c50bf938fce76527548c8abac90d6da53c22fcb
-
-console.log('wee woo')
-
 export default function MainPage() {
     const {avatar} = useContext(AvatarContext); // The avatar ID
     const [avatarData, setAvatarData] = useState<AvatarData | null>(null);
