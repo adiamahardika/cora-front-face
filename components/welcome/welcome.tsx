@@ -1,7 +1,8 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {io} from "socket.io-client";
+import AvatarContext from "../avatar/avatar-context";
 
 const WebSocketGreeting = ({
                                aigender,
@@ -13,6 +14,7 @@ const WebSocketGreeting = ({
     setTalking: (talking: boolean) => void;
 }) => {
     const [isProcessing, setIsProcessing] = useState(false); // State to track if processing
+    const {tone} = useContext(AvatarContext)
 
     useEffect(() => {
         const socket = io("http://localhost:5000", {
@@ -55,6 +57,7 @@ const WebSocketGreeting = ({
                             text: data.gender,
                             time: data.time,
                             emotion: data.emotion,
+                            tone: tone
                         }),
                     }
                 );
