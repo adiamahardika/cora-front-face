@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState, useRef} from "react";
 import {io} from "socket.io-client";
 import AvatarContext from "../avatar/avatar-context";
 
@@ -15,11 +15,14 @@ const WebSocketGreeting = ({
 }) => {
     const [isProcessing, setIsProcessing] = useState(false); // State to track if processing
     const {tone} = useContext(AvatarContext)
+    const toneRef = useRef(tone);
+
+      useEffect(() => {
+        toneRef.current = tone;
+      }, [tone]);
 
     useEffect(() => {
-        const socket = io("http://localhost:5000", {
-            transports: ["websocket"],
-        });
+        const socket = io("http://localhost:5000");
         const playAudioBlob = async (audioBlob: Blob) => {
             const audioContext = new AudioContext();
             try {
@@ -46,6 +49,7 @@ const WebSocketGreeting = ({
         }) => {
             if (isProcessing) return; // Ignore emit if already processing
             setIsProcessing(true); // Set processing state to true
+            console.log(tone)
             try {
                 console.log("Processing detection data:", data);
                 const response = await fetch(
@@ -64,6 +68,7 @@ const WebSocketGreeting = ({
                 if (!response.ok) {
                     throw new Error(`Error from server: ${response.statusText}`);
                 }
+                
                 const result = await response.json();
                 const greetingText = result.text;
                 const ttsResponse = await fetch(
