@@ -12,21 +12,7 @@ interface AvatarData {
     talkingImage: string | null;
 }
 
-const fetchAvatarFromDB = async (id: string): Promise<AvatarData | null> => {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open('AvatarDatabase', 1);
-        request.onsuccess = () => {
-            const db = request.result;
-            const transaction = db.transaction('avatars', 'readonly');
-            const store = transaction.objectStore('avatars');
-            const getRequest = store.get(id);
-
-            getRequest.onsuccess = () => resolve(getRequest.result as AvatarData);
-            getRequest.onerror = () => reject(new Error('Failed to fetch avatar data'));
-        };
-        request.onerror = () => reject(new Error('Failed to open IndexedDB'));
-    });
-};
+    
 
 console.log('wee woo')
 
