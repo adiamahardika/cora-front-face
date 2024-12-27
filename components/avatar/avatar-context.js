@@ -12,6 +12,7 @@ export const AvatarProvider = ({children}) => {
     const [volume, setVolume] = useState(() => localStorage.getItem('volume') || 80);
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'system');
     const [tone, setTone] = useState(() => localStorage.getItem('tone') || 'professional');
+    const [voice, setVoice] = useState(() => localStorage.getItem('voice') || '');
 
     useEffect(() => {
         if (avatar) {
@@ -45,6 +46,10 @@ export const AvatarProvider = ({children}) => {
         localStorage.setItem('tone', tone)
     }, [tone]);
 
+    useEffect(() => {
+        localStorage.setItem('voice', voice)
+    }, [voice])
+
     return (
         <AvatarContext.Provider
             value={{
@@ -64,6 +69,8 @@ export const AvatarProvider = ({children}) => {
                 setTheme,
                 tone,
                 setTone,
+                voice,
+                setVoice,
             }}
         >
             {children}

@@ -1,5 +1,3 @@
-'use client';
-
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
     DrawerContent,
@@ -20,112 +18,21 @@ import {
     DialogDescription,
 } from '@/components/ui/dialog';
 import {useToast} from "@/hooks/use-toast";
-
-// IndexedDB setup
-interface AvatarData {
-    id: string;
-    idleImage: string | null;
-    talkingImage: string | null;
-}
-
-let db: IDBDatabase | null = null;
-
-const openDatabase = (): Promise<IDBDatabase | null> => {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open('AvatarDatabase', 1);
-
-        request.onupgradeneeded = (event) => {
-            const db = (event.target as IDBOpenDBRequest).result;
-            if (!db.objectStoreNames.contains('avatars')) {
-                db.createObjectStore('avatars', {keyPath: 'id'});
-            }
-        };
-
-        request.onsuccess = (event) => {
-            const db = (event.target as IDBOpenDBRequest).result;
-            resolve(db);
-        };
-
-        request.onerror = (event) => {
-            console.error('Database error:', (event.target as IDBOpenDBRequest).error);
-            reject(new Error('Failed to open IndexedDB'));
-        };
-    });
-};
-
-const saveAvatar = async (avatarData: AvatarData): Promise<void> => {
-    const db = await openDatabase();
-    if (!db) return;
-
-    const transaction = db.transaction('avatars', 'readwrite');
-    const store = transaction.objectStore('avatars');
-    const request = store.add(avatarData);
-
-    request.onerror = (event) => {
-        console.error('Error saving avatar:', (event.target as IDBRequest).error);
-    };
-};
-
-const getAllAvatars = async (callback: (avatars: AvatarData[]) => void): Promise<void> => {
-    const db = await openDatabase();
-    if (!db) return;
-
-    const transaction = db.transaction('avatars', 'readonly');
-    const store = transaction.objectStore('avatars');
-    const request = store.getAll();
-
-    request.onsuccess = () => {
-        callback(request.result as AvatarData[]);
-    };
-
-    request.onerror = (event) => {
-        console.error('Error retrieving avatars:', (event.target as IDBRequest).error);
-    };
-};
-
-const fetchAllAvatarsFromDB = async (): Promise<AvatarData[]> => {
-    const db = await openDatabase();
-    if (!db) return [];
-
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction('avatars', 'readonly');
-        const store = transaction.objectStore('avatars');
-        const request = store.getAll();
-
-        request.onsuccess = () => resolve(request.result as AvatarData[]);
-        request.onerror = () => reject(new Error('Failed to fetch avatars'));
-    });
-};
-
-const uploadImageBase64 = (file: File, callback: (base64Image: string) => void): void => {
-    if (!file) {
-        console.error('No file provided.');
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        const base64Image = event.target?.result as string;
-        callback(base64Image);
-    };
-
-    reader.onerror = (error) => {
-        console.error('Error reading file:', error);
-    };
-
-    reader.readAsDataURL(file);
-};
+import {Switch} from "@/components/ui/switch";
+import {AvatarData, getAllAvatars, openDatabase, saveAvatar, uploadImageBase64} from "@/utils/database/indexed-db";
+import {Badge} from "@/components/ui/badge";
 
 export default function DrawerComponentAvatar(): JSX.Element {
-    const {setAvatar} = useContext(AvatarContext);
+    const {setAvatar, setVoice} = useContext(AvatarContext);
     const {theme} = useTheme();
     const [open, setOpen] = useState(false);
     const [avatars, setAvatars] = useState<AvatarData[]>([]);
     const [idleImage, setIdleImage] = useState<string | null>(null);
     const [talkingImage, setTalkingImage] = useState<string | null>(null);
+    const [isFemale, setIsFemale] = useState(false); // Local gender state
     const idleInputRef = useRef<HTMLInputElement | null>(null);
     const talkingInputRef = useRef<HTMLInputElement | null>(null);
-    const {toast} = useToast()
+    const {toast} = useToast();
 
     useEffect(() => {
         openDatabase();
@@ -170,19 +77,30 @@ export default function DrawerComponentAvatar(): JSX.Element {
             id: Date.now().toString(),
             idleImage,
             talkingImage,
+            voice: isFemale ? "female" : "male", // Use local state for voice
         };
         saveAvatar(newAvatar);
         setAvatars((prev) => [...prev, newAvatar]);
         setIdleImage(null);
         setTalkingImage(null);
+        setIsFemale(false); // Reset local gender state
         setOpen(false);
     };
 
-    useEffect(() => {
-        openDatabase()
-            .then(() => getAllAvatars(setAvatars))
-            .catch((error) => console.error('Error opening database:', error));
-    }, []);
+    const handleGenderSwitch = (checked: boolean): void => {
+        setIsFemale(checked); // Update local gender state
+    };
+
+    const handleSelectAvatar = (avatarId: string): void => {
+        const selectedAvatar = avatars.find((avatar) => avatar.id === avatarId);
+
+        if (selectedAvatar) {
+            setAvatar(selectedAvatar.id);
+            if (selectedAvatar.voice) {
+                setVoice(selectedAvatar.voice); // Update voice in AvatarContext
+            }
+        }
+    };
 
     const cardBackgroundColor = theme === 'dark' ? 'var(--white)' : 'var(--black)';
 
@@ -257,39 +175,94 @@ export default function DrawerComponentAvatar(): JSX.Element {
                                     onChange={handleFileUpload('talking')}
                                 />
                             </div>
-                            <Button onClick={handleSaveAvatar} className={classes.buttonSave}>Save Avatar</Button>
+                            <div className={classes.genderSwitch}>
+                                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight w-[100px] pl-2">
+                                    Male
+                                </h4>
+                                <Switch
+                                    checked={isFemale} // Local gender state
+                                    onCheckedChange={handleGenderSwitch}
+                                />
+                                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight w-[100px] text-right">
+                                    Female
+                                </h4>
+                            </div>
+                            <Button onClick={handleSaveAvatar} className={classes.buttonSave}>
+                                <h4
+                                    className="scroll-m-20 text-md font-semibold tracking-tight w-[100px]">
+                                    Save Avatar
+                                </h4>
+                            </Button>
                         </DialogContent>
                     </Dialog>
                 </div>
                 <div className={classes.wrapper}>
-                    {/* Static cards */}
                     <div
                         className={classes.card}
                         style={{backgroundColor: cardBackgroundColor}}
-                        onClick={() => setAvatar('male')}
+                        onClick={() => {
+                            setAvatar('male');
+                            setVoice('male');
+                        }}
                     >
                         <img className={classes.img} src="/male.svg" alt="Male Avatar"/>
+                        <Badge
+                            className={classes.badge}
+                            style={{
+                                backgroundColor: '#60a5fa',
+                                position: 'absolute',
+                                top: '8px',
+                                right: '8px',
+                            }}
+                        >
+                            Male
+                        </Badge>
                     </div>
                     <div
                         className={classes.card}
                         style={{backgroundColor: cardBackgroundColor}}
-                        onClick={() => setAvatar('female')}
+                        onClick={() => {
+                            setAvatar('female');
+                            setVoice('female');
+                        }}
                     >
                         <img className={classes.img} src="/female.svg" alt="Female Avatar"/>
+                        <Badge
+                            className={classes.badge}
+                            style={{
+                                backgroundColor: '#f87171',
+                                position: 'absolute',
+                                top: '8px',
+                                right: '8px',
+                            }}
+                        >
+                            Female
+                        </Badge>
                     </div>
 
                     {avatars.map((avatar) => (
                         <div
                             key={avatar.id}
                             className={classes.card}
-                            style={{backgroundColor: cardBackgroundColor}}
-                            onClick={() => setAvatar(avatar.id)}
+                            style={{position: 'relative', backgroundColor: cardBackgroundColor}}
+                            onClick={() => handleSelectAvatar(avatar.id)}
                         >
                             <img className={classes.img} src={avatar.idleImage || ''} alt="Avatar"/>
+
+                            <Badge
+                                className={classes.badge}
+                                style={{
+                                    backgroundColor: avatar?.voice === 'female' ? '#f87171' : '#60a5fa',
+                                    position: 'absolute',
+                                    top: '8px',
+                                    right: '8px',
+                                }}
+                            >
+                                {avatar?.voice?.charAt(0).toUpperCase() + avatar?.voice?.slice(1)}
+                            </Badge>
                         </div>
                     ))}
                 </div>
-
             </div>
         </DrawerContent>
     );

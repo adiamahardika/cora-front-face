@@ -52,6 +52,7 @@
 }
 
 .card {
+    position: relative;
     height: 7rem;
     display: flex;
     justify-content: center;
@@ -96,4 +97,13 @@
 
 .shadcn-toast .close-button {
     display: none;
+}
+
+.genderSwitch {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
 }
