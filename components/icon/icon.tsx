@@ -52,6 +52,7 @@ export default function IconSettings() {
                         </div>
                     </div>
                 </DrawerTrigger>
+                {/* conditional drawer component ngebuat animasi close drawernya ilang, tolong difix */}
                 {activeDrawer === "settings" && <DrawerComponentSettings/>}
                 {activeDrawer === "avatar" && <DrawerComponentAvatar/>}
             </Drawer>

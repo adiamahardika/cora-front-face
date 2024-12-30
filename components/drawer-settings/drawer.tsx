@@ -1,82 +1,29 @@
 'use client';
 
-import {useContext, useState} from 'react';
-import {useDropzone} from 'react-dropzone';
+import { useContext, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import {
     DrawerContent,
     DrawerHeader,
     DrawerTitle
 } from "@/components/ui/drawer";
-
 import classes from './drawer.module.css';
 import AvatarContext from "@/components/avatar/avatar-context";
-import {Separator} from "@/components/ui/separator";
-import {IconSquareRoundedPlus} from "@tabler/icons-react";
+import { Separator } from "@/components/ui/separator";
+import { IconSquareRoundedPlus } from "@tabler/icons-react";
 import FontSelector from "@/components/font-selector/font-selector";
 import VolumeSliderComponent from "@/components/slider-volume/slider";
 import ThemeSelector from "@/components/theme-selector/theme-selector";
 import ToneSelector from "@/components/tone-selector/tone-selector";
-import {Button} from "@/components/ui/button";
-
-const dbName = "BackgroundDB";
-const storeName = "BackgroundImages";
-
-const openDB = (): Promise<IDBDatabase> => {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open(dbName, 1);
-
-        request.onupgradeneeded = (event) => {
-            const db = (event.target as IDBRequest).result;
-            if (!db.objectStoreNames.contains(storeName)) {
-                db.createObjectStore(storeName, {keyPath: "id"});
-            }
-        };
-
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-    });
-};
-
-
-const saveToIndexedDB = async (key: string, file: Blob) => {
-    const db = await openDB();
-    return new Promise<void>((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            const transaction = db.transaction(storeName, "readwrite");
-            const store = transaction.objectStore(storeName);
-
-            store.put({id: key, data: reader.result});
-
-            transaction.oncomplete = () => resolve();
-            transaction.onerror = () => reject(transaction.error);
-        };
-
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
-    });
-};
-
-
-export const getFromIndexedDB = async (key: string) => {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction(storeName, "readonly");
-        const store = transaction.objectStore(storeName);
-        const request = store.get(key);
-
-        request.onsuccess = () => resolve(request.result?.data || null);
-        request.onerror = () => reject(request.error);
-    });
-};
+import { Button } from "@/components/ui/button";
+import {saveToIndexedDB} from "@/utils/database/indexed-settings-db";
 
 export default function DrawerComponentSettings() {
-    const {isCollapse, setIsCollapse, background, setBackground, savedFile, setSavedFile} = useContext(AvatarContext);
+    const { isCollapse, setIsCollapse, background, setBackground, savedFile, setSavedFile } = useContext(AvatarContext);
     const [error, setError] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-    const {getRootProps, getInputProps} = useDropzone({
+    const { getRootProps, getInputProps } = useDropzone({
         onDrop: async (acceptedFiles, rejectedFiles) => {
             if (acceptedFiles.length > 0) {
                 const file = acceptedFiles[0];
@@ -88,9 +35,9 @@ export default function DrawerComponentSettings() {
                     setBackground(fileUrl);
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-expect-error
-                    setSelectedFile(fileUrl);
-                    setSavedFile(fileUrl);
-                    saveToIndexedDB("backgroundImage", file);
+                    setSelectedFile(fileUrl as string);
+                    setSavedFile(fileUrl as string);
+                    saveToIndexedDB("backgroundImage", file); // Use reusable function
                 };
                 reader.readAsDataURL(file);
             }
@@ -98,8 +45,6 @@ export default function DrawerComponentSettings() {
                 setError("Only image files are accepted.");
             }
         }
-
-
     });
 
     const toggleCollapse = () => {
@@ -110,7 +55,6 @@ export default function DrawerComponentSettings() {
         setBackground(imageName);
     };
 
-    // Array of background images
     const backgroundImages = [
         "/bg/background1.png",
         "/bg/background2.png",
@@ -130,37 +74,36 @@ export default function DrawerComponentSettings() {
                         <img
                             src={background}
                             alt="background"
-                            className={`rounded - md object-cover ${classes.toggleImg}`}
+                            className={`rounded-md object-cover ${classes.toggleImg}`}
                             onClick={toggleCollapse}
-                            style={{cursor: "pointer"}}
+                            style={{ cursor: "pointer" }}
                         />
                     </div>
                     <div className={classes.item}>
                         <p>Font</p>
-                        <FontSelector/>
+                        <FontSelector />
                     </div>
                     <div className={classes.item}>
                         <p>Volume</p>
                         <div className={classes.slider}>
-                            <VolumeSliderComponent/>
+                            <VolumeSliderComponent />
                         </div>
                     </div>
                     <div className={classes.item}>
                         <p>Gaya Bahasa</p>
-                        <ToneSelector/>
+                        <ToneSelector />
                     </div>
                     <div className={classes.item}>
                         <p>Tema</p>
-                        <ThemeSelector/>
+                        <ThemeSelector />
                     </div>
-
                 </div>
                 {isCollapse && (
                     <>
-                        <Separator orientation={"vertical"}/>
+                        <Separator orientation={"vertical"} />
                         <div
                             className={`${classes.background} overflow-y-auto`}
-                            style={{maxHeight: "calc(100vh - 100px)"}}
+                            style={{ maxHeight: "calc(100vh - 100px)" }}
                         >
                             <Button
                                 className={`${classes.upload} rounded-md`}
@@ -168,7 +111,6 @@ export default function DrawerComponentSettings() {
                             >
                                 <input {...getInputProps()} />
                                 <IconSquareRoundedPlus style={{ fontSize: '32px', width: '32px', height: '32px' }} />
-
                             </Button>
                             {error && <p className="text-red-500 mt-2">{error}</p>}
                             {(savedFile || selectedFile) && (
@@ -187,7 +129,6 @@ export default function DrawerComponentSettings() {
                                     onClick={() => handleSetBackground(image)}
                                 />
                             ))}
-
                         </div>
                     </>
                 )}

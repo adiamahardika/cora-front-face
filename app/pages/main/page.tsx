@@ -5,15 +5,10 @@ import {useContext, useEffect, useState} from "react";
 import IconSettings from "@/components/icon/icon";
 import BubbleComponent from "@/components/bubble-container/bubble";
 import WebSocketGreeting from '@/components/welcome/welcome';
-
-interface AvatarData {
-    id: string;
-    idleImage: string | null;
-    talkingImage: string | null;
-}
+import { AvatarData } from "@/utils/database/indexed-avatar-db";
 
 export default function MainPage() {
-    const {avatar} = useContext(AvatarContext); // The avatar ID
+    const {avatar, voice} = useContext(AvatarContext); // The avatar ID
     const [isProcessing, setIsProcessing] = useState(false); // State to track if processing
     const [avatarData, setAvatarData] = useState<AvatarData | null>(null);
     const [greeting, setGreeting] = useState("");
@@ -23,19 +18,19 @@ export default function MainPage() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open("AvatarDatabase", 1);
 
-            request.onupgradeneeded = (event) => {
+            request.onupgradeneeded = () => {
                 const db = request.result;
                 if (!db.objectStoreNames.contains("avatars")) {
-                    db.createObjectStore("avatars", {keyPath: "id"}); // Pastikan sesuai dengan struktur data
+                    db.createObjectStore("avatars", {keyPath: "id"});
                 }
             };
 
             request.onsuccess = () => {
                 const db = request.result;
 
-                // Cek apakah object store "avatars" ada sebelum membuat transaksi
                 if (!db.objectStoreNames.contains("avatars")) {
-                    resolve(null); // Tidak ada data yang ditemukan
+                    console.warn("Object store 'avatars' does not exist.");
+                    resolve(null);
                     return;
                 }
 
@@ -43,13 +38,20 @@ export default function MainPage() {
                 const store = transaction.objectStore("avatars");
                 const getRequest = store.get(id);
 
-                getRequest.onsuccess = () =>
+                getRequest.onsuccess = () => {
                     resolve((getRequest.result as AvatarData) || null);
-                getRequest.onerror = () =>
+                };
+
+                getRequest.onerror = () => {
+                    console.error("Error fetching data from object store.");
                     reject(new Error("Failed to fetch avatar data"));
+                };
             };
 
-            request.onerror = () => reject(new Error("Failed to open IndexedDB"));
+            request.onerror = (event) => {
+                console.error("Error opening IndexedDB:", event);
+                reject(new Error("Failed to open IndexedDB"));
+            };
         });
     };
 
@@ -60,11 +62,11 @@ export default function MainPage() {
                     if (data) {
                         setAvatarData(data);
                     } else {
-                        // If not in IndexedDB, fallback to local public folder
                         setAvatarData({
                             id: avatar,
-                            idleImage: `/${avatar}.png`, // Local idle image
-                            talkingImage: `/${avatar}.gif`, // Local talking image
+                            idleImage: `/${avatar}.png`,
+                            talkingImage: `/${avatar}.gif`,
+                            voice: voice
                         });
                     }
                 })
@@ -114,7 +116,6 @@ export default function MainPage() {
             <div className={'w-[50px]'}>
             </div>
             <WebSocketGreeting
-                aigender={avatar}
                 setGreetingCallback={setGreeting}
                 setTalking={setIsSpeaking}
                 setProcessing={setIsProcessing}

@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/dialog';
 import {useToast} from "@/hooks/use-toast";
 import {Switch} from "@/components/ui/switch";
-import {AvatarData, getAllAvatars, openDatabase, saveAvatar, uploadImageBase64} from "@/utils/database/indexed-db";
+import {AvatarData, getAllAvatars, openDatabase, saveAvatar, uploadImageBase64} from "@/utils/database/indexed-avatar-db";
 import {Badge} from "@/components/ui/badge";
 
 export default function DrawerComponentAvatar(): JSX.Element {
