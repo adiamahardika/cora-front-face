@@ -53,13 +53,13 @@ utils/          # All sort of utilities function
 
 The application includes the following API endpoint:
 
-- **POST /ai_speech/generate-audio**
-    - Description: Generates audio output based on the provided text.
+- **POST /ai_speech/generate-text**
+    - Description: Generates text output based on the emotion, user gender, time, tone
     - Request Body:
       ```json
       {
         "emotion": "neutral",
-        "text": "Male",
+        "gender": "Male",
         "time": "14:31:14",
         "tone": "santai"
       }
@@ -68,6 +68,15 @@ The application includes the following API endpoint:
       ```json
       {
         "text": "Hi there! Good afternoon! How's your day going so far?"
+      }
+      ```
+  - **POST /ai_speech/generate-audio**
+    - Description: Generates wav file based on the provided text and preset gender.
+    - Request Body:
+      ```json
+      {
+        "text": "Hi, how's it going?",
+        "gender": "female"
       }
       ```
 
