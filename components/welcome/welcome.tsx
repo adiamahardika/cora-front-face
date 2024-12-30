@@ -93,6 +93,7 @@ const WebSocketGreeting = ({
         const audioBlob = await ttsResponse.blob();
         // Save the greeting in the parent via callback
         setGreetingCallback(greetingText);
+        setProcessing(true)
         setTalking(true);
         setProcessing(true);
         await playAudioBlob(audioBlob);

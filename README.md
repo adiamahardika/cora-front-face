@@ -1,40 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Virtual Frontdesk
 
-## Getting Started
+Virtual Frontdesk is a modern AI-powered web application that uses advanced technologies to enhance the user experience. Designed as a virtual receptionist, the application can detect the presence of individuals and greet them with AI-generated speech.
+
+## Features
+
+- **AI Greeting**: Detects users and greets them automatically using AI-powered text-to-speech.
+- **Customizable Messages**: Ability to configure greeting messages for various scenarios.
+- **Scalable Architecture**: Built using Next.js 14 to ensure a smooth and scalable development experience.
+- **Intuitive UI**: Provides a simple and user-friendly interface for easy navigation and interaction.
+
+## Installation
+
+To set up the project locally, follow these steps:
 
 ```bash
-npm i
+# Navigate to the project directory
+cd virtual-frontdesk
+
+# Install dependencies
+npm install
 ```
 
-First, run the development server:
+## Usage
+
+To run the application locally:
 
 ```bash
+# Start the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To build the application for production:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Folder Structure
 
-## Learn More
+The project follows the default structure of Next.js 14 with slight modifications:
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  pages/        # Contains all the pages of the application
+components/     # Reusable UI components
+public/         # Static assets like images and fonts
+utils/          # All sort of utilities function
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API Documentation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application includes the following API endpoint:
 
-## Deploy on Vercel
+- **POST /ai_speech/generate-audio**
+    - Description: Generates audio output based on the provided text.
+    - Request Body:
+      ```json
+      {
+        "emotion": "neutral",
+        "text": "Male",
+        "time": "14:31:14",
+        "tone": "santai"
+      }
+      ```
+    - Response:
+      ```json
+      {
+        "text": "Hi there! Good afternoon! How's your day going so far?"
+      }
+      ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
