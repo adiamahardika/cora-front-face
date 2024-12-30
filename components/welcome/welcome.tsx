@@ -5,12 +5,11 @@ import {io} from "socket.io-client";
 import AvatarContext from "../avatar/avatar-context";
 
 const WebSocketGreeting = ({
-  aigender,
   setGreetingCallback,
   setTalking,
   setProcessing,
 }: {
-  aigender: string;
+
   setGreetingCallback: (greeting: string) => void;
   setTalking: (talking: boolean) => void;
   setProcessing: (talking: boolean) => void;
@@ -18,10 +17,16 @@ const WebSocketGreeting = ({
   const [isProcessing, setIsProcessing] = useState(false); // State to track if processing
   const { tone } = useContext(AvatarContext);
   const toneRef = useRef(tone);
+  const { voice } = useContext(AvatarContext)
+  const voiceref = useRef(voice)
 
   useEffect(() => {
     toneRef.current = tone;
   }, [tone]);
+
+  useEffect(() => {
+     voiceref.current = voice;
+    }, [voice]);
 
   useEffect(() => {
     const socket = io("http://localhost:5000");
@@ -51,7 +56,6 @@ const WebSocketGreeting = ({
     }) => {
       if (isProcessing) return; // Ignore emit if already processing
       setIsProcessing(true); // Set processing state to true
-      setProcessing(true)
       setGreetingCallback("Thinking...");
       console.log(tone);
       try {
@@ -62,7 +66,7 @@ const WebSocketGreeting = ({
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              text: data.gender,
+              user_gender: data.gender,
               time: data.time,
               emotion: data.emotion,
               tone: tone,
@@ -80,7 +84,7 @@ const WebSocketGreeting = ({
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: greetingText, gender: aigender }),
+            body: JSON.stringify({ text: greetingText, gender: voice }),
           }
         );
         if (!ttsResponse.ok) {
@@ -90,6 +94,7 @@ const WebSocketGreeting = ({
         // Save the greeting in the parent via callback
         setGreetingCallback(greetingText);
         setTalking(true);
+        setProcessing(true);
         await playAudioBlob(audioBlob);
       } catch (error) {
         console.error("Error generating or playing greeting:", error);
@@ -113,7 +118,7 @@ const WebSocketGreeting = ({
       socket.off("detection", handleDetection); // Proper cleanup
       socket.disconnect();
     };
-  }, [aigender, setGreetingCallback, isProcessing, tone]);
+  }, [setGreetingCallback, isProcessing, tone, voice]);
   return null; // Component runs in the background and is invisible
 };
 
