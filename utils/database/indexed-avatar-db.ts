@@ -7,7 +7,7 @@ export interface AvatarData {
 
 export const openDatabase = (): Promise<IDBDatabase | null> => {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open('AvatarDatabase', 1);
+        const request = indexedDB.open('AvatarDatabase', 2);
 
         request.onupgradeneeded = (event) => {
             const db = (event.target as IDBOpenDBRequest).result;

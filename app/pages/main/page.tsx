@@ -16,7 +16,7 @@ export default function MainPage() {
 
     const fetchAvatarFromDB = async (id: string): Promise<AvatarData | null> => {
         return new Promise((resolve, reject) => {
-            const request = indexedDB.open("AvatarDatabase", 1);
+            const request = indexedDB.open("AvatarDatabase", 2);
 
             request.onupgradeneeded = () => {
                 const db = request.result;
