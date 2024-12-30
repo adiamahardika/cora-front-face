@@ -258,7 +258,9 @@ export default function DrawerComponentAvatar(): JSX.Element {
                                     right: '8px',
                                 }}
                             >
-                                {avatar?.voice?.charAt(0).toUpperCase() + avatar?.voice?.slice(1)}
+                                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                                {/*@ts-expect-error*/}
+                                {avatar?.voice?.charAt(0)?.toUpperCase() + avatar?.voice?.slice(1) || 'Undefined'}
                             </Badge>
                         </div>
                     ))}

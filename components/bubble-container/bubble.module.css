@@ -1,31 +1,30 @@
-.wrapper {
-    min-width: 300px;
-    max-width: 1000px;
-    min-height: 100px;
-    max-height: 500px;
-    display: none;
-    flex-direction: row;
+.main {
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
-    align-items: stretch; /* Ensures all children stretch to the same height */
-    justify-content: center;
-}
-
-.main {
-    padding: 16px;
     background-color: var(--black);
-    display: flex;
+    min-width: 10rem;
+    max-width: 50rem;
+    min-height: 3rem;
+    max-height: 20rem;
+    padding: 16px;
     border-radius: 5px;
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     white-space: normal;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    overflow: hidden;
     flex-grow: 1;
+    text-align: center;
 }
 
-.wrapper.show {
+.p {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.show {
     display: block;
     opacity: 1;
 }
