@@ -51,7 +51,6 @@ const WebSocketGreeting = ({
     }) => {
       if (isProcessing) return; // Ignore emit if already processing
       setIsProcessing(true); // Set processing state to true
-      setProcessing(true)
       setGreetingCallback("Thinking...");
       console.log(tone);
       try {
@@ -89,6 +88,7 @@ const WebSocketGreeting = ({
         const audioBlob = await ttsResponse.blob();
         // Save the greeting in the parent via callback
         setGreetingCallback(greetingText);
+        setProcessing(true)
         setTalking(true);
         await playAudioBlob(audioBlob);
       } catch (error) {
