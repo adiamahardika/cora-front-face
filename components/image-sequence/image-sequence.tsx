@@ -2,13 +2,13 @@ import { motion } from 'framer-motion';
 import classes from '@/components/drawer-settings/drawer.module.css'
 
 export const imageVariants = {
-    hidden: { opacity: 0, y: 20 }, // Mulai dari opacity 0 dan turun sedikit
+    hidden: { opacity: 0, y: 20 },
     visible: (index: number) => ({
         opacity: 1,
         y: 0,
         transition: {
-            delay: index * 0.3, // Delay tiap gambar sesuai urutan
-            duration: 0.5,      // Durasi animasi tiap gambar
+            delay: index * 0.2,
+            duration: 0.3,
             ease: 'easeInOut',
         },
     }),
