@@ -224,7 +224,10 @@ export default function DrawerComponentAvatar(): JSX.Element {
                                 variants={imageVariants}
                                 className={classes.card}
                                 style={{position: 'relative', backgroundColor: cardBackgroundColor}}
-                                onClick={() => setAvatar('male')}
+                                onClick={() => {
+                                    setAvatar('male');
+                                    setVoice('male');
+                                }}
                             >
                                 <img className={classes.img} src={'/male.png'} alt="male"/>
                                 <Badge
@@ -243,7 +246,10 @@ export default function DrawerComponentAvatar(): JSX.Element {
                                 variants={imageVariants}
                                 className={classes.card}
                                 style={{position: 'relative', backgroundColor: cardBackgroundColor}}
-                                onClick={() => setAvatar('female')}
+                                onClick={() => {
+                                    setAvatar('female');
+                                    setVoice('female');
+                                }}
                             >
                                 <img className={classes.img} src={'/female.png'} alt="female"/>
                                 <Badge
