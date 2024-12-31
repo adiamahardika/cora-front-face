@@ -133,7 +133,11 @@ export default function DrawerComponentAvatar(): JSX.Element {
                                     <motion.div
                                         variants={imageVariants}
                                         className={classes.cardAdd}
-                                        style={{position: 'relative', backgroundColor: cardBackgroundColor, color: textColor}}
+                                        style={{
+                                            position: 'relative',
+                                            backgroundColor: cardBackgroundColor,
+                                            color: textColor
+                                        }}
                                         onClick={() => setOpen(true)}
                                     >
                                         <IconPlus style={{fontSize: '32px', width: '32px', height: '32px'}}/>
@@ -220,7 +224,7 @@ export default function DrawerComponentAvatar(): JSX.Element {
                                 variants={imageVariants}
                                 className={classes.card}
                                 style={{position: 'relative', backgroundColor: cardBackgroundColor}}
-                                onClick={() => handleSelectAvatar('male')}
+                                onClick={() => setAvatar('male')}
                             >
                                 <img className={classes.img} src={'/male.png'} alt="male"/>
                                 <Badge
@@ -239,7 +243,7 @@ export default function DrawerComponentAvatar(): JSX.Element {
                                 variants={imageVariants}
                                 className={classes.card}
                                 style={{position: 'relative', backgroundColor: cardBackgroundColor}}
-                                onClick={() => handleSelectAvatar('female')}
+                                onClick={() => setAvatar('female')}
                             >
                                 <img className={classes.img} src={'/female.png'} alt="female"/>
                                 <Badge
