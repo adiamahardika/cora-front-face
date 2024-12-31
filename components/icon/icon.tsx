@@ -2,7 +2,7 @@ import {IconHexagon, IconUsersPlus} from "@tabler/icons-react";
 import {useEffect, useRef, useState} from "react";
 
 import classes from "./icon.module.css";
-import {Drawer, DrawerTrigger} from "@/components/ui/drawer";
+import {DrawerSettings, DrawerTrigger} from "@/components/ui/drawer-settings";
 import DrawerComponentAvatar from "@/components/drawer-avatar/drawer";
 import DrawerComponentSettings from "@/components/drawer-settings/drawer";
 
@@ -35,7 +35,7 @@ export default function IconSettings() {
 
     return (
         <>
-            <Drawer open={activeDrawer !== null} onOpenChange={(open) => !open && setActiveDrawer(null)}>
+            <DrawerSettings open={activeDrawer !== null} onOpenChange={(open) => !open && setActiveDrawer(null)}>
                 <DrawerTrigger asChild>
                     <div className={classes.wrapper}>
                         <div
@@ -55,7 +55,7 @@ export default function IconSettings() {
                 {/* conditional drawer component ngebuat animasi close drawernya ilang, tolong difix */}
                 {activeDrawer === "settings" && <DrawerComponentSettings/>}
                 {activeDrawer === "avatar" && <DrawerComponentAvatar/>}
-            </Drawer>
+            </DrawerSettings>
         </>
     );
 }

@@ -54,3 +54,33 @@ export const getFromIndexedDB = async (key: string): Promise<string | null> => {
         request.onerror = () => reject(request.error);
     });
 };
+
+// Retrieve all data from IndexedDB
+export const getAllFromIndexedDB = async (): Promise<string[]> => {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(storeName, 'readonly');
+        const store = transaction.objectStore(storeName);
+        const request = store.getAll();
+
+        request.onsuccess = () => {
+            const results = request.result.map((item: any) => item.data || null);
+            resolve(results);
+        };
+        request.onerror = () => reject(request.error);
+    });
+};
+
+// Function to delete data from IndexedDB
+export const deleteFromIndexedDB = async (key: string): Promise<void> => {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(storeName, 'readwrite');
+        const store = transaction.objectStore(storeName);
+        const request = store.delete(key);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+};
+
