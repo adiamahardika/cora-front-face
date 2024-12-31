@@ -255,7 +255,7 @@ export default function DrawerComponentAvatar(): JSX.Element {
                                         right: '8px',
                                     }}
                                 >
-                                    Male
+                                    Female
                                 </Badge>
                             </motion.div>
                         </motion.div>
