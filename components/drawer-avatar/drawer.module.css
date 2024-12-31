@@ -1,0 +1,113 @@
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 0;
+    gap: 1rem;
+}
+
+.wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+    gap: 1rem;
+    padding: 0 16px;
+    transition: all 0.3s ease-in-out;
+}
+
+.wrapperButton {
+    width: 100%;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    transition: all 0.3s ease-in-out; /* Animate padding, gap, or layout changes */
+}
+
+.button {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    transition: all 0.2s ease-out;
+}
+
+.button:hover {
+    transform: scale(1.03);
+    transition: all 0.2s ease-out;
+}
+
+.buttonSave {
+    transition: all 0.2s ease-out;
+}
+
+.itemButton {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: .2rem;
+}
+
+.card {
+    position: relative;
+    height: 7rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    overflow: hidden;
+}
+
+.card:nth-child(n):nth-last-child(1):only-child {
+    grid-column: span 2;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+.img {
+    width: 6rem;
+}
+
+.cardAdd {
+    width: 100%;
+    height: 7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    overflow: hidden;
+}
+
+.cardAdd:hover {
+    transform: scale(1.03);
+}
+
+.active {
+    border: 2px solid red;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.shadcn-toast .close-button {
+    display: none;
+}
+
+.genderSwitch {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+}

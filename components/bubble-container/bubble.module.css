@@ -1,0 +1,31 @@
+.main {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    background-color: var(--black);
+    min-width: 10rem;
+    max-width: 50rem;
+    min-height: 3rem;
+    max-height: 20rem;
+    padding: 16px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.p {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.show {
+    display: block;
+    opacity: 1;
+}
+
