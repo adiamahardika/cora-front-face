@@ -1,9 +1,5 @@
-// indexedDBUtils.ts
-
 const dbName = "BackgroundDB";
 const storeName = "BackgroundImages";
-
-// Function to open IndexedDB
 
 export const openDB = (): Promise<IDBDatabase> => {
     return new Promise((resolve, reject) => {
@@ -21,7 +17,6 @@ export const openDB = (): Promise<IDBDatabase> => {
     });
 };
 
-// Function to save data to IndexedDB
 export const saveToIndexedDB = async (key: string, file: Blob) => {
     const db = await openDB();
     return new Promise<void>((resolve, reject) => {
@@ -42,7 +37,6 @@ export const saveToIndexedDB = async (key: string, file: Blob) => {
     });
 };
 
-// Function to retrieve data from IndexedDB
 export const getFromIndexedDB = async (key: string): Promise<string | null> => {
     const db = await openDB();
     return new Promise((resolve, reject) => {
@@ -55,7 +49,6 @@ export const getFromIndexedDB = async (key: string): Promise<string | null> => {
     });
 };
 
-// Retrieve all data from IndexedDB
 export const getAllFromIndexedDB = async (): Promise<string[]> => {
     const db = await openDB();
     return new Promise((resolve, reject) => {
@@ -64,6 +57,7 @@ export const getAllFromIndexedDB = async (): Promise<string[]> => {
         const request = store.getAll();
 
         request.onsuccess = () => {
+
             const results = request.result.map((item: any) => item.data || null);
             resolve(results);
         };
@@ -71,16 +65,28 @@ export const getAllFromIndexedDB = async (): Promise<string[]> => {
     });
 };
 
-// Function to delete data from IndexedDB
-export const deleteFromIndexedDB = async (key: string): Promise<void> => {
+export const deleteFromIndexedDB = async (fileData: string): Promise<void> => {
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, 'readwrite');
         const store = transaction.objectStore(storeName);
-        const request = store.delete(key);
 
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
+        // Open a cursor to find the entry matching the fileData
+        const request = store.openCursor();
+        request.onsuccess = (event) => {
+            const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
+            if (cursor) {
+                const entry = cursor.value;
+                if (entry.data === fileData) {
+                    cursor.delete(); // Delete the matching entry
+                } else {
+                    cursor.continue(); // Continue searching
+                }
+            }
+        };
+
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error);
     });
 };
 
