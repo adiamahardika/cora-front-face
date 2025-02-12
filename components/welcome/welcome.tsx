@@ -61,31 +61,37 @@ const WebSocketGreeting = ({
             console.log(tone);
             try {
                 console.log("Processing detection data:", data);
-                const response = await fetch(
-                    `${backendUrl}/ai_speech/generate-greeting`,
+                // const response = await fetch(
+                //     `${backendUrl}/ai_speech/generate-greeting`,
+                //     {
+                //         method: "POST",
+                //         headers: {"Content-Type": "application/json"},
+                //         body: JSON.stringify({
+                //             user_gender: data.gender,
+                //             time: data.time,
+                //             emotion: data.emotion,
+                //             tone: tone,
+                //         }),
+                //     }
+                // );
+                // if (!response.ok) {
+                //     throw new Error(`Error from server: ${response.statusText}`);
+                // }
+
+                // const result = await response.json();
+                // const greetingText = result.text;
+                const ttsResponse = await fetch(
+                    `${backendUrl}/conversation`,
                     {
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
                         body: JSON.stringify({
-                            user_gender: data.gender,
+                            gender: data.gender,
                             time: data.time,
                             emotion: data.emotion,
                             tone: tone,
                         }),
-                    }
-                );
-                if (!response.ok) {
-                    throw new Error(`Error from server: ${response.statusText}`);
-                }
-
-                const result = await response.json();
-                const greetingText = result.text;
-                const ttsResponse = await fetch(
-                    `${backendUrl}/ai_speech/generate-audio`,
-                    {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({text: greetingText, gender: voice}),
+                        // body: JSON.stringify({text: greetingText, gender: voice}),
                     }
                 );
                 if (!ttsResponse.ok) {
@@ -93,7 +99,7 @@ const WebSocketGreeting = ({
                 }
                 const audioBlob = await ttsResponse.blob();
                 // Save the greeting in the parent via callback
-                setGreetingCallback(greetingText);
+                setGreetingCallback("greetingText");
                 setProcessing(true)
                 setTalking(true);
                 setProcessing(true);
